@@ -1,9 +1,11 @@
 const Discord = require("discord.js");
 const enmap = require("enmap");
 const {DB} = require('mongquick');
-
-async function start(client, uri){
+async function db(uri){
 const settings = new DB(uri);
+}
+
+async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
 
 client.on("messageReactionAdd", async (reaction, user, message) => {
@@ -91,4 +93,5 @@ message.delete()
 }
 module.exports.setup = setup
 module.exports.start = start
+module.exports.login = db
 module.exports.close = close
