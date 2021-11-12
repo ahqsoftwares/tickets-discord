@@ -1,9 +1,6 @@
 const Discord = require("discord.js");
 const {DB} = require('mongquick');
 const settings = new DB(process.env.DB);
-let process = require('process');
-process.on('uncaughtException', function(err) {
-});
 
 async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
@@ -65,7 +62,7 @@ client.on("interactionCreate", async (interaction) => {
 });
 }
 async function setup(message,channelID){
-  if (typeof(message.guild.roles.cache.find(role => role.name === 'Ticket')) == undefined) {
+  if (((message.guild).roles.cache.get(role => role.name === 'Ticket')) == null) {
     message.guild.roles.create({
       name: 'Ticket'
     })
