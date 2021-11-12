@@ -7,14 +7,11 @@ async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
 
 client.on("messageReactionAdd", async (reaction, user, message) => {
-  if (user.partial) await user.fetch();
-  if (reaction.partial) await reaction.fetch();
-  if (reaction.message.partial) await reaction.message.fetch();
   if (user.bot) return;
 
   if (!(await(settings.has(`${reaction.message.guild.id}-ticket`)))) return;
 
-  if (reaction.message.id == (await(settings.get(`${reaction.message.guild.id}-ticket`))) && reaction.emoji.name == "🎫") {
+  if (reaction.message.channelId == (await(settings.get(`${reaction.message.guild.id}-ticket`))) && reaction.emoji.name == "🎫") {
     reaction.users.remove(user);
 
     reaction.message.guild.channels
@@ -77,7 +74,7 @@ async function setup(message,channelID){
       ]
     }).then(sent => {
       sent.react("🎫");
-      settings.set(`${message.guild.id}-ticket`, sent.id);
+      settings.set(`${message.guild.id}-ticket`, channelID);
     });
       message.channel.send("Ticket System Setup Done!");
 }
