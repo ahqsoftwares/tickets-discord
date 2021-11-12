@@ -64,7 +64,7 @@ client.on("messageReactionAdd", async (reaction, user, message) => {
         });
         collector.on('collect', async i => {
           await i.deferReply()
-          close(reaction.message)
+          close(channel)
         })
         });
       });
@@ -89,10 +89,11 @@ async function setup(message,channelID){
 }
 
 async function close(message){
-  if (!message.channel.name.includes("ticket-"))
-  return message.channel.send("You cannot use that here!");
-let channel = message.channel
-message.channel.delete()
+  if (!message.name.includes("ticket-")){
+  message.send("You cannot use that here!");
+  return 
+  }
+message.delete()
 }
 module.exports.setup = setup
 module.exports.start = start
