@@ -37,6 +37,6 @@
     "dependencies": {
       "discord.js": "^13.2.0",
       "enmap": "^5.8.7",
-      "mongquick": "git+github.com/ahqsoftwares/quickmongo.git"
+      "mongquick": "git+https://github.com/ahqsoftwares/quickmongo.git"
     }
   }
