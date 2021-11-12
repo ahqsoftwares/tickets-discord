@@ -57,17 +57,18 @@ client.on("messageReactionAdd", async (reaction, user, message) => {
 }
 async function setup(message,channelID){
     const channel = message.guild.channels.cache.find(channel => channel.id === channelID);
-    let sent = await channel.send(
+    channel.send({
+      embeds: [
         new Discord.MessageEmbed()
           .setTitle("Ticket System")
           .setDescription("React to open a ticket!")
           .setFooter("Ticket System")
           .setColor("00ff00")
-      );
-  
+      ]
+    }).then(sent => {
       sent.react("🎫");
       settings.set(`${message.guild.id}-ticket`, sent.id);
-  
+    });
       message.channel.send("Ticket System Setup Done!");
 }
 
