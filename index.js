@@ -1,12 +1,10 @@
 const Discord = require("discord.js");
 const enmap = require("enmap");
-const settings = new enmap({
-    name: "settings",
-    autoFetch: true,
-    cloneLevel: "deep",
-    fetchAll: true
-  });
-
+const DB = require('mongquick');
+const settings = new DB(process.env.CODEFILE);
+if (!process.env.CODEFILE) {
+  throw new Error("MongoDB url not provided!")
+}
 async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
 
@@ -16,7 +14,7 @@ client.on("messageReactionAdd", async (reaction, user, message) => {
   if (reaction.message.partial) await reaction.message.fetch();
   if (user.bot) return;
 
-  let ticketid = await settings.get(`${reaction.message.guild.id}-ticket`);
+  let ticketid = (await(settings.get(`${reaction.message.guild.id}-ticket`)));
 
   if (!ticketid) return;
 

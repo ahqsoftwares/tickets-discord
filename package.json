@@ -36,6 +36,7 @@
     "homepage": "https://djs-tickets.js.org",
     "dependencies": {
       "discord.js": "^13.2.0",
-      "enmap": "^5.8.7"
+      "enmap": "^5.8.7",
+      "mongquick": "git+github.com/ahqsoftwares/quickmongo.git"
     }
   }
