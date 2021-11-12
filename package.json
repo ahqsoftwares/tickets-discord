@@ -1,6 +1,6 @@
 {
     "name": "tickets-discord",
-    "version": "1.6.3",
+    "version": "1.6.6",
     "description": "An easy to setup ticket system discord bot for Djs v12/v13, works for unlimited servers",
     "main": "index.js",
     "scripts": {
@@ -26,12 +26,11 @@
     ],
     "repository": {
       "type": "git",
-      "url": "git+https://github.com/pgamerx/djs-tickets.git"
+      "url": "git+https://github.com/ahqsoftwares/discord-tickets.git"
     },
-    "author": "PGamerX, AHQMiness",
-    "license": "MIT",
+    "author": "AHQMiness",
     "bugs": {
-      "url": "https://github.com/pgamerx/djs-tickets/issues"
+      "url": "https://github.com/ahqsoftwares/discord-tickets/issues"
     },
     "homepage": "https://djs-tickets.js.org",
     "dependencies": {
