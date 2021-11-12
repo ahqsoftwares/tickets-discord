@@ -1,12 +1,8 @@
-##Declaration
+Declaration
 
+`const ts = require('tickets-discord');`
 
-const ts = require('tickets-discord');
+`ts.start(client //client)`
 
-
-ts.start(client //client)
-
-##Setup
-
-
-ts.setup(message/interaction, channelID)
+Setup
+`ts.setup(message/interaction, channelID)`
