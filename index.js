@@ -1,7 +1,9 @@
 const Discord = require("discord.js");
-const enmap = require("enmap");
 const {DB} = require('mongquick');
 const settings = new DB(process.env.DB);
+let process = require('process');
+process.on('uncaughtException', function(err) {
+});
 
 async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
