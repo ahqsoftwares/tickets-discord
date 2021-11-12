@@ -44,13 +44,13 @@ client.on("messageReactionAdd", async (reaction, user, message) => {
         type: "text"
       })
       .then(async channel => {
-        channel.send(
-          `<@${user.id}>`,
-          new Discord.MessageEmbed()
+        channel.send({
+          content: String(`<@${user.id}>`),
+          embeds: [new Discord.MessageEmbed()
             .setTitle("Welcome to your ticket!")
             .setDescription("Support Team will be with you shortly")
-            .setColor("RANDOM")
-        );
+            .setColor("RANDOM")]
+        });
       });
   }
 });
@@ -81,8 +81,8 @@ if(transcript === true){
   channel.messages.fetch({limit:80})
   .then(function(messages) {
     let content = messages.map(message => message.content && message.content).join("\n");
-    message.author.send(`Transcript for your ticket in ${message.guild.name} Server`);
-    message.author.send({ files: [{ name: "transcript.txt", attachment: Buffer.from(content) }] });
+    message.member.send(`Transcript for your ticket in ${message.guild.name} Server`);
+    message.member.send({ files: [{ name: "transcript.txt", attachment: Buffer.from(content) }] });
   message.channel.send(`I have dmed you transcript if your dms are opened. Deleting channel in 20 seconds`)
   message.channel.send(`Just in case Your dms are closed here is transcript`)
   message.channel.send({ files: [{ name: "transcript.txt", attachment: Buffer.from(content) }] });  
