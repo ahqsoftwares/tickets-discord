@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const enmap = require("enmap");
-const DB = require('mongquick');
+const {DB} = require('mongquick');
 const settings = new DB(process.env.CODEFILE);
 if (!process.env.CODEFILE) {
   throw new Error("MongoDB url not provided!")
