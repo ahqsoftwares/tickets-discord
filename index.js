@@ -62,7 +62,8 @@ client.on("interactionCreate", async (interaction) => {
 });
 }
 async function setup(message,channelID){
-  if (((message.guild).roles.cache.get(role => role.name === 'Ticket')) == null) {
+  let role = message.guild.roles.cache.find(r => r.name === "Ticket");
+  if (!(role)) {
     message.guild.roles.create({
       name: 'Ticket'
     })
