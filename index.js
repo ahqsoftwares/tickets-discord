@@ -1,5 +1,4 @@
-const Discord = require("discord.js")
-
+const Discord = require("discord.js");
 const enmap = require("enmap");
 const settings = new enmap({
     name: "settings",
@@ -10,6 +9,7 @@ const settings = new enmap({
 
 async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
+
 client.on("messageReactionAdd", async (reaction, user, message) => {
   if (user.partial) await user.fetch();
   if (reaction.partial) await reaction.fetch();
@@ -31,7 +31,7 @@ client.on("messageReactionAdd", async (reaction, user, message) => {
             allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
           },
           {
-            id: reaction.message.guild.roles.everyone,
+            id: reaction.message.guild.id,
             deny: ["VIEW_CHANNEL"]
           },
           {
@@ -49,7 +49,23 @@ client.on("messageReactionAdd", async (reaction, user, message) => {
           embeds: [new Discord.MessageEmbed()
             .setTitle("Welcome to your ticket!")
             .setDescription("Support Team will be with you shortly")
-            .setColor("RANDOM")]
+            .setColor("RANDOM")],
+          components: [
+            new Discord.MessageActionRow().addComponents(
+              new Discord.MessageButton()
+              .setStyle('DANGER')
+              .setLabel("Close Ticket")
+              .setCustomId('cl')
+            )
+          ]
+        }).then(m => {
+          let collector = m.createMessageComponentCollector({
+            max: 1
+        });
+        collector.on('collect', async i => {
+          await i.deferReply()
+          close(reaction.message)
+        })
         });
       });
   }
@@ -72,28 +88,11 @@ async function setup(message,channelID){
       message.channel.send("Ticket System Setup Done!");
 }
 
-async function close(message,transcript){
+async function close(message){
   if (!message.channel.name.includes("ticket-"))
   return message.channel.send("You cannot use that here!");
 let channel = message.channel
-
-if(transcript === true){
-  channel.messages.fetch({limit:80})
-  .then(function(messages) {
-    let content = messages.map(message => message.content && message.content).join("\n");
-    message.member.send(`Transcript for your ticket in ${message.guild.name} Server`);
-    message.member.send({ files: [{ name: "transcript.txt", attachment: Buffer.from(content) }] });
-  message.channel.send(`I have dmed you transcript if your dms are opened. Deleting channel in 20 seconds`)
-  message.channel.send(`Just in case Your dms are closed here is transcript`)
-  message.channel.send({ files: [{ name: "transcript.txt", attachment: Buffer.from(content) }] });  
-  })
- setTimeout(function() {
-    message.channel.delete();
-     },20000)
-    }
-    else{
-      message.channel.delete()
-    }
+message.channel.delete()
 }
 module.exports.setup = setup
 module.exports.start = start
