@@ -1,11 +1,9 @@
 const Discord = require("discord.js");
 const enmap = require("enmap");
 const {DB} = require('mongquick');
-const settings = new DB(process.env.CODEFILE);
-if (!process.env.CODEFILE) {
-  throw new Error("MongoDB url not provided!")
-}
-async function start(client){
+
+async function start(client, uri){
+const settings = new DB(uri);
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
 
 client.on("messageReactionAdd", async (reaction, user, message) => {
@@ -14,11 +12,9 @@ client.on("messageReactionAdd", async (reaction, user, message) => {
   if (reaction.message.partial) await reaction.message.fetch();
   if (user.bot) return;
 
-  let ticketid = (await(settings.get(`${reaction.message.guild.id}-ticket`)));
+  if (!(await(settings.has(`${reaction.message.guild.id}-ticket`)))) return;
 
-  if (!ticketid) return;
-
-  if (reaction.message.id == ticketid && reaction.emoji.name == "🎫") {
+  if (reaction.message.id == (await(settings.get(`${reaction.message.guild.id}-ticket`))) && reaction.emoji.name == "🎫") {
     reaction.users.remove(user);
 
     reaction.message.guild.channels
