@@ -18,7 +18,7 @@ client.on("interactionCreate", async (interaction) => {
       .create(`ticket-${interaction.member.user.username}`, {
         permissionOverwrites: [
           {
-            id: user.id,
+            id: interaction.member.user.id,
             allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
           },
           {
@@ -63,6 +63,11 @@ client.on("interactionCreate", async (interaction) => {
 });
 }
 async function setup(message,channelID){
+  if (typeof(message.guild.roles.cache.find(role => role.name === 'Ticket')) == undefined) {
+    message.guild.roles.create({
+      name: 'Ticket'
+    })
+  }
     const channel = message.guild.channels.cache.find(channel => channel.id === channelID);
     channel.send({
       embeds: [
