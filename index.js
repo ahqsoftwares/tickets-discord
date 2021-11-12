@@ -10,6 +10,7 @@ client.on("interactionCreate", async (interaction) => {
   if (!(interaction.customId == 'cr')) return;
   if (interaction.member.user.bot) return;
   const reaction = interaction;
+  await interaction.deferReply({ephemeral: true});
   if (!(await(settings.has(`${interaction.guild.id}-ticket`)))) return;
 
   if (reaction.channel.id == (await(settings.get(`${interaction.message.guild.id}-ticket`)))) {
@@ -62,12 +63,6 @@ client.on("interactionCreate", async (interaction) => {
 });
 }
 async function setup(message,channelID){
-  let role = message.guild.roles.cache.find(r => r.name === "Ticket");
-  if (!(role)) {
-    message.guild.roles.create({
-      name: 'Ticket'
-    })
-  }
     const channel = message.guild.channels.cache.find(channel => channel.id === channelID);
     channel.send({
       embeds: [
@@ -83,11 +78,18 @@ async function setup(message,channelID){
               .setStyle('SUCCESS')
               .setLabel("Open Ticket")
               .setCustomId('cr')
+              .setEmoji('🎫')
             )
           ]
     }).then(sent => {
       settings.set(`${message.guild.id}-ticket`, channelID);
     });
+    let role = message.guild.roles.cache.get(r => r.name === "Ticket");
+  if (role == '') {
+    message.guild.roles.create({
+      name: 'Ticket'
+    })
+  }
       message.channel.send("Ticket System Setup Done!");
 }
 
