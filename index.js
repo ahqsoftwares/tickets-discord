@@ -11,9 +11,9 @@ client.on("interactionCreate", async (interaction) => {
   if (!(interaction.customId == 'cr')) return;
   if (interaction.member.user.bot) return;
   const reaction = interaction;
-  if (!(await(settings.has(`${interactoin.guild.id}-ticket`)))) return;
+  if (!(await(settings.has(`${interaction.guild.id}-ticket`)))) return;
 
-  if (reaction.channel.id == (await(settings.get(`${reaction.message.guild.id}-ticket`)))) {
+  if (reaction.channel.id == (await(settings.get(`${interaction.message.guild.id}-ticket`)))) {
     reaction.guild.channels
       .create(`ticket-${interaction.member.user.username}`, {
         permissionOverwrites: [
