@@ -6,16 +6,16 @@ const settings = new DB(process.env.DB);
 async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
 
-client.on("messageReactionAdd", async (reaction, user, message) => {
-  if (user.bot) return;
+client.on("interactionCreate", async (interaction) => {
+  if (!(interaction.isButton())) return;
+  if (!(interaction.customId == 'cr')) return;
+  if (interaction.member.user.bot) return;
+  const reaction = interaction;
+  if (!(await(settings.has(`${interactoin.guild.id}-ticket`)))) return;
 
-  if (!(await(settings.has(`${reaction.message.guild.id}-ticket`)))) return;
-
-  if (reaction.message.channelId == (await(settings.get(`${reaction.message.guild.id}-ticket`))) && reaction.emoji.name == "🎫") {
-    reaction.users.remove(user);
-
-    reaction.message.guild.channels
-      .create(`ticket-${user.username}`, {
+  if (reaction.channel.id == (await(settings.get(`${reaction.message.guild.id}-ticket`))) {
+    reaction.guild.channels
+      .create(`ticket-${interaction.member.user.username}`, {
         permissionOverwrites: [
           {
             id: user.id,
@@ -36,7 +36,7 @@ client.on("messageReactionAdd", async (reaction, user, message) => {
       })
       .then(async channel => {
         channel.send({
-          content: String(`<@${user.id}>`),
+          content: String(`<@${interaction.member.user.id}>`),
           embeds: [new Discord.MessageEmbed()
             .setTitle("Welcome to your ticket!")
             .setDescription("Support Team will be with you shortly")
@@ -68,12 +68,19 @@ async function setup(message,channelID){
       embeds: [
         new Discord.MessageEmbed()
           .setTitle("Ticket System")
-          .setDescription("React to open a ticket!")
+          .setDescription("Click to open a ticket!")
           .setFooter("Ticket System")
           .setColor("00ff00")
-      ]
+      ],
+      components: [
+            new Discord.MessageActionRow().addComponents(
+              new Discord.MessageButton()
+              .setStyle('SUCCESS')
+              .setLabel("Open Ticket")
+              .setCustomId('cr')
+            )
+          ]
     }).then(sent => {
-      sent.react("🎫");
       settings.set(`${message.guild.id}-ticket`, channelID);
     });
       message.channel.send("Ticket System Setup Done!");
