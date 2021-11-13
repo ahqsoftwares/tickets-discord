@@ -45,7 +45,7 @@ client.on("interactionCreate", async (interaction) => {
             new Discord.MessageActionRow().addComponents(
               new Discord.MessageButton()
               .setStyle('DANGER')
-              .setLabel("Close Ticket")
+              .setLabel("Archive Ticket")
               .setCustomId('cl')
             )
           ]
@@ -55,7 +55,7 @@ client.on("interactionCreate", async (interaction) => {
         });
         collector.on('collect', async i => {
           await i.deferReply()
-          close(channel)
+          archive(channel)
         })
         });
       });
@@ -92,7 +92,28 @@ async function setup(message,channelID){
   }
       message.channel.send("Ticket System Setup Done!");
 }
-
+async function archive(message){
+  if (!message.name.includes("ticket-")){
+    message.send("You cannot use that here!");
+    return 
+    }
+  if (!message.name.includes("ticket-")){
+  message.send("You cannot use that here!");
+  return 
+  }
+  message.channel.permissionOverwrites.edit([
+    {
+      id: message.guild.id,
+      deny: ["VIEW_CHANNEL"]
+    },
+    {
+      id: message.guild.roles.cache.find(
+        role => role.name === "Ticket"
+      ),
+      allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
+    }
+  ]);
+}
 async function close(message){
   if (!message.name.includes("ticket-")){
   message.send("You cannot use that here!");
@@ -103,3 +124,4 @@ message.delete()
 module.exports.setup = setup
 module.exports.start = start
 module.exports.close = close
+module.exports.archive = archive
