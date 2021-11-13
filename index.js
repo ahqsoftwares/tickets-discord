@@ -128,11 +128,11 @@ async function unarchive(channel){
       allow: ["VIEW_CHANNEL", "SEND_MESSAGES"]
     },
     {
-      id: message.guild.id,
+      id: channel.guild.id,
       deny: ["VIEW_CHANNEL"]
     },
     {
-      id: message.guild.roles.cache.find(
+      id: channel.guild.roles.cache.find(
         role => role.name === "Ticket"
       ),
       allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
