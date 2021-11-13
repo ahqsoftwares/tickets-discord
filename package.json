@@ -1,7 +1,7 @@
 {
     "name": "tickets-discord",
     "version": "2.5.1",
-    "description": "An easy to setup ticket system discord bot for Djs v12/v13, works for unlimited servers",
+    "description": "Easy Ticket Setup for Discord.js v13",
     "main": "index.js",
     "bin": "index.js",
     "scripts": {
