@@ -144,6 +144,7 @@ async function close(message){
 message.delete()
 }
 module.exports.setup = setup
+module.exports.login = login
 module.exports.start = start
 module.exports.close = close
 module.exports.archive = archive
