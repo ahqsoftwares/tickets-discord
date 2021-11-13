@@ -13,7 +13,9 @@ let {
     const client = new Discord.Client({
         intents: [Object.values(Discord.Intents.FLAGS).reduce((acc, p) => acc | p, 0)]
     });
-    client.login("TOEKN)
+    client.login("TOEKN")
+    const ticket = require('tickets-discord');
+    ticket.start(client //client)
     client.on('messageCreate', async (s4dmessage) => {
     if (message.content.startsWith('n!ticket')) {
         ticket.setup(message, message.mentions.channels.first().id);
