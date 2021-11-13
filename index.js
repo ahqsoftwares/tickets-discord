@@ -1,6 +1,9 @@
 const Discord = require("discord.js");
 const {DB} = require('mongquick');
-settings = new DB(process.env.DB);
+var settings;
+async function login(url) {
+settings = new DB(url);
+}
 
 async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
