@@ -54,7 +54,7 @@ ticket.setup(message/interaction, channelID//ticket setup channel id)
 Genarally the close button is already given in this ticket welcome and also you can delete a ticket by using.
 
 ```
-ticket.close(message.channe; //the message channe; parameter)
+ticket.close(message.channel //the message channel parameter)
 ```
 
 ### Archiving a ticket
