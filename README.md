@@ -17,7 +17,7 @@ let {
     const ticket = require('tickets-discord');
     ticket.start(client //client)
     ticket.login("MONGODB url")
-    client.on('messageCreate', async (s4dmessage) => {
+    client.on('messageCreate', async (message) => {
     if (message.content.startsWith('n!ticket')) {
         ticket.setup(message, message.mentions.channels.first().id);
     }
@@ -26,6 +26,9 @@ let {
     }
     if (message.content.startsWith('n!archive')) {
         ticket.archive(message.channel);
+    }
+    if (message.content.startsWith('n!unarchive')) {
+        ticket.unarchive(message.channel);
     }
 
 });
@@ -50,17 +53,21 @@ ticket.start(client //client)
 ```
 ticket.setup(message/interaction, channelID//ticket setup channel id)
 ```
-
-### Closing a ticket 
-Genarally the close button is already given in this ticket welcome and also you can delete a ticket by using.
-
-```
-ticket.close(message.channel //the message channel parameter)
-```
-
 ### Archiving a ticket
 The button archives the ticket also you can use 
 
 ```
 ticket.archive(messsage.channel //message channel parameter)
+```
+
+### Unarchiving a ticket
+
+```
+ticket.archive(messsage.channel //message channel parameter)
+```
+### Closing a ticket 
+Genarally the close button is already given in this ticket welcome and also you can delete a ticket by using.
+
+```
+ticket.close(message.channel //the message channel parameter)
 ```

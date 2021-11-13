@@ -38,6 +38,7 @@ client.on("interactionCreate", async (interaction) => {
         type: "text"
       })
       .then(async channel => {
+        settings.set(channel.id, interaction.member.user.id);
         channel.send({
           content: String(`<@${interaction.member.user.id}>`),
           embeds: [new Discord.MessageEmbed()
@@ -112,6 +113,33 @@ async function setup(message,channelID){
     });
       message.channel.send("Ticket System Setup Done!");
 }
+async function unarchive(channel){
+  if (!(await(settings.has(channel.id)))) {
+    channel.send({
+      content: String("The user of the ticket was not found!")
+    })
+    return
+  }
+  let mid = (await(settings.get(channel.id)));
+  channel.edit({
+    permissionOverwrites: [
+    {
+      id: mid,
+      allow: ["VIEW_CHANNEL", "SEND_MESSAGES"]
+    },
+    {
+      id: message.guild.id,
+      deny: ["VIEW_CHANNEL"]
+    },
+    {
+      id: message.guild.roles.cache.find(
+        role => role.name === "Ticket"
+      ),
+      allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
+    }
+  ]
+  });
+}
 async function archive(message){
   if (!message.name.includes("ticket-")){
     message.send("You cannot use that here!");
@@ -148,3 +176,4 @@ module.exports.login = login
 module.exports.start = start
 module.exports.close = close
 module.exports.archive = archive
+module.exports.unarchive = unarchive
