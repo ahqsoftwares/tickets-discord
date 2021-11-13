@@ -1,4 +1,4 @@
-# Exameple
+# Example
 ```
 let {
         Discord,
@@ -31,32 +31,33 @@ let {
 ```
 
 # Setup
-## Declaration
-```
-const ticket = require('tickets-discord');
 
-ticket.start(client //client)
-```
 ## Important
 
 ```
 Create a .env file called DB and set a mongoDB url
 ```
+### Declaration
+```
+const ticket = require('tickets-discord');
 
-## Setup
+ticket.start(client //client)
+```
+
+### Setup
 
 ```
 ticket.setup(message/interaction, channelID//ticket setup channel id)
 ```
 
-## Closing a ticket 
+### Closing a ticket 
 Genarally the close button is already given in this ticket welcome and also you can delete a ticket by using.
 
 ```
 ticket.close(message.channe; //the message channe; parameter)
 ```
 
-## Archiving a ticket
+### Archiving a ticket
 The button archives the ticket also you can use 
 
 ```
