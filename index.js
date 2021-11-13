@@ -139,6 +139,9 @@ async function unarchive(channel){
     }
   ]
   });
+  channel.send({
+    content: String(`Hello <@${mid}> \n The ticket was reopened by a staff member`)
+  })
 }
 async function archive(message){
   if (!message.name.includes("ticket-")){
