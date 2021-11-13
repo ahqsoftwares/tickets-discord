@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const {DB} = require('mongquick');
-const settings = new DB(process.env.DB);
+settings = new DB(process.env.DB);
 
 async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
@@ -45,16 +45,39 @@ client.on("interactionCreate", async (interaction) => {
             new Discord.MessageActionRow().addComponents(
               new Discord.MessageButton()
               .setStyle('DANGER')
-              .setLabel("Archive Ticket")
+              .setLabel("Lock Ticket")
               .setCustomId('cl')
+              .setEmoji('🔐')
             )
           ]
         }).then(m => {
           let collector = m.createMessageComponentCollector({
-            max: 1
+            max: 3
         });
         collector.on('collect', async i => {
-          await i.deferReply()
+          if (i.user.id !== interaction.member.user.id) {
+            await i.reply({
+              content: String("You are not the ticket issuer"), 
+              ephemeral: true
+            })
+            return
+          }
+          await i.update({
+            embeds: [new Discord.MessageEmbed()
+              .setTitle("Welcome to your ticket!")
+              .setDescription("The ticket was closed")
+              .setColor("RANDOM")],
+            components: [
+              new Discord.MessageActionRow().addComponents(
+                new Discord.MessageButton()
+                .setStyle('DANGER')
+                .setLabel("Lock Ticket")
+                .setCustomId('cl')
+                .setEmoji('🔐')
+                .setDisabled(true)
+              )
+            ]
+          })
           archive(channel)
         })
         });
@@ -84,12 +107,6 @@ async function setup(message,channelID){
     }).then(sent => {
       settings.set(`${message.guild.id}-ticket`, channelID);
     });
-    let role = message.guild.roles.cache.get(r => r.name === "Ticket");
-  if (role == '') {
-    message.guild.roles.create({
-      name: 'Ticket'
-    })
-  }
       message.channel.send("Ticket System Setup Done!");
 }
 async function archive(message){
@@ -101,7 +118,8 @@ async function archive(message){
   message.send("You cannot use that here!");
   return 
   }
-  message.channel.permissionOverwrites.edit([
+  message.edit({
+    permissionOverwrites: [
     {
       id: message.guild.id,
       deny: ["VIEW_CHANNEL"]
@@ -112,7 +130,8 @@ async function archive(message){
       ),
       allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
     }
-  ]);
+  ]
+});
 }
 async function close(message){
   if (!message.name.includes("ticket-")){

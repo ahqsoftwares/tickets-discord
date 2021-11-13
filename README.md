@@ -21,10 +21,10 @@ let {
         ticket.setup(message, message.mentions.channels.first().id);
     }
     if (message.content.startsWith('n!close')) {
-        ticket.close(message);
+        ticket.close(message.channel);
     }
     if (message.content.startsWith('n!archive')) {
-        ticket.archive(message);
+        ticket.archive(message.channel);
     }
 
 });
@@ -53,12 +53,12 @@ ticket.setup(message/interaction, channelID//ticket setup channel id)
 Genarally the close button is already given in this ticket welcome and also you can delete a ticket by using.
 
 ```
-ticket.close(message //the message parameter)
+ticket.close(message.channe; //the message channe; parameter)
 ```
 
 ## Archiving a ticket
 The button archives the ticket also you can use 
 
 ```
-ticket.archive(messsage //message parameter)
+ticket.archive(messsage.channel //message channel parameter)
 ```
