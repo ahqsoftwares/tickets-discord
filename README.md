@@ -13,9 +13,10 @@ let {
     const client = new Discord.Client({
         intents: [Object.values(Discord.Intents.FLAGS).reduce((acc, p) => acc | p, 0)]
     });
-    client.login("TOEKN")
+    client.login("TOKEN")
     const ticket = require('tickets-discord');
     ticket.start(client //client)
+    ticket.login("MONGODB url")
     client.on('messageCreate', async (s4dmessage) => {
     if (message.content.startsWith('n!ticket')) {
         ticket.setup(message, message.mentions.channels.first().id);
@@ -32,10 +33,10 @@ let {
 
 # Setup
 
-## Important
+## Login with mongoDB
 
 ```
-Create a .env file called DB and set a mongoDB url
+ticket.login("MongoDB url")
 ```
 ### Declaration
 ```
