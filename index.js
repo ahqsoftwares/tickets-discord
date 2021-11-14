@@ -1,8 +1,14 @@
 const Discord = require("discord.js");
 const {DB} = require('mongquick');
-var settings;
+var settings, type;
 async function login(url) {
-settings = new DB(url);
+  if (url == 'local') {
+    type = "quick";
+    settings = require('quick.db');
+    return
+  }
+  type = 'mongo';
+  settings = new DB(url);
 }
 
 async function start(client){
@@ -14,80 +20,90 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.member.user.bot) return;
   const reaction = interaction;
   await interaction.deferReply({ephemeral: true});
+  if (type == 'mongo') {
   if (!(await(settings.has(`${interaction.guild.id}-ticket`)))) return;
-
   if (reaction.channel.id == (await(settings.get(`${interaction.message.guild.id}-ticket`)))) {
-    reaction.guild.channels
-      .create(`ticket-${interaction.member.user.username}`, {
-        permissionOverwrites: [
-          {
-            id: interaction.member.user.id,
-            allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
-          },
-          {
-            id: reaction.message.guild.id,
-            deny: ["VIEW_CHANNEL"]
-          },
-          {
-            id: reaction.message.guild.roles.cache.find(
-              role => role.name === "Ticket"
-            ),
-            allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
-          }
-        ],
-        type: "text"
-      })
-      .then(async channel => {
-        settings.set(channel.id, interaction.member.user.id);
-        channel.send({
-          content: String(`<@${interaction.member.user.id}>`),
-          embeds: [new Discord.MessageEmbed()
-            .setTitle("Welcome to your ticket!")
-            .setDescription("Support Team will be with you shortly")
-            .setColor("RANDOM")],
-          components: [
-            new Discord.MessageActionRow().addComponents(
-              new Discord.MessageButton()
-              .setStyle('DANGER')
-              .setLabel("Lock Ticket")
-              .setCustomId('cl')
-              .setEmoji('🔐')
-            )
-          ]
-        }).then(m => {
-          let collector = m.createMessageComponentCollector({
-            max: 3
-        });
-        collector.on('collect', async i => {
-          if (i.user.id !== interaction.member.user.id) {
-            await i.reply({
-              content: String("You are not the ticket issuer"), 
-              ephemeral: true
-            })
-            return
-          }
-          await i.update({
-            embeds: [new Discord.MessageEmbed()
-              .setTitle("Welcome to your ticket!")
-              .setDescription("The ticket was closed")
-              .setColor("RANDOM")],
-            components: [
-              new Discord.MessageActionRow().addComponents(
-                new Discord.MessageButton()
-                .setStyle('DANGER')
-                .setLabel("Lock Ticket")
-                .setCustomId('cl')
-                .setEmoji('🔐')
-                .setDisabled(true)
-              )
-            ]
-          })
-          archive(channel)
-        })
-        });
-      });
+    ticket(interaction);
   }
+} else {
+  if (!((settings.has(`${interaction.guild.id}-ticket`)))) return;
+  if (reaction.channel.id == ((settings.get(`${interaction.message.guild.id}-ticket`)))) {
+    ticket(interaction);
+  }
+}
 });
+}
+async function ticket(interaction) {
+  let reaction = interaction;
+  reaction.guild.channels
+  .create(`ticket-${interaction.member.user.username}`, {
+    permissionOverwrites: [
+      {
+        id: interaction.member.user.id,
+        allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
+      },
+      {
+        id: reaction.guild.id,
+        deny: ["VIEW_CHANNEL"]
+      },
+      {
+        id: reaction.guild.roles.cache.find(
+          role => role.name === "Ticket"
+        ),
+        allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
+      }
+    ],
+    type: "text"
+  })
+  .then(async channel => {
+    settings.set(channel.id, interaction.member.user.id);
+    channel.send({
+      content: String(`<@${interaction.member.user.id}>`),
+      embeds: [new Discord.MessageEmbed()
+        .setTitle("Welcome to your ticket!")
+        .setDescription("Support Team will be with you shortly")
+        .setColor("RANDOM")],
+      components: [
+        new Discord.MessageActionRow().addComponents(
+          new Discord.MessageButton()
+          .setStyle('DANGER')
+          .setLabel("Lock Ticket")
+          .setCustomId('cl')
+          .setEmoji('🔒')
+        )
+      ]
+    }).then(m => {
+      let collector = m.createMessageComponentCollector({
+        max: 3
+    });
+    collector.on('collect', async i => {
+      if (i.user.id !== interaction.member.user.id) {
+        await i.reply({
+          content: String("You are not the ticket issuer"), 
+          ephemeral: true
+        })
+        return
+      }
+      await i.update({
+        embeds: [new Discord.MessageEmbed()
+          .setTitle("Welcome to your ticket!")
+          .setDescription("The ticket was archived")
+          .setColor("RANDOM")],
+        components: [
+          new Discord.MessageActionRow().addComponents(
+            new Discord.MessageButton()
+            .setStyle('DANGER')
+            .setLabel("Locked Ticket")
+            .setCustomId('cl')
+            .setEmoji('🔏')
+            .setDisabled(true)
+          )
+        ]
+      })
+      archive(channel)
+    })
+    });
+  });
 }
 async function setup(message,channelID){
     const channel = message.guild.channels.cache.find(channel => channel.id === channelID);
@@ -114,13 +130,23 @@ async function setup(message,channelID){
       message.channel.send("Ticket System Setup Done!");
 }
 async function unarchive(channel){
-  if (!(await(settings.has(channel.id)))) {
-    channel.send({
-      content: String("The user of the ticket was not found!")
-    })
-    return
-  }
+  if (type == 'mongo') {
+    if (!(await(settings.has(channel.id)))) {
+      channel.send({
+        content: String("The user of the ticket was not found!")
+      })
+      return
+    }
   let mid = (await(settings.get(channel.id)));
+  } else {
+    if (!((settings.has(channel.id)))) {
+      channel.send({
+        content: String("The user of the ticket was not found!")
+      })
+      return
+    }
+    let mid = (settings.get(channel.id));
+  }
   channel.edit({
     permissionOverwrites: [
     {
@@ -148,10 +174,6 @@ async function archive(message){
     message.send("You cannot use that here!");
     return 
     }
-  if (!message.name.includes("ticket-")){
-  message.send("You cannot use that here!");
-  return 
-  }
   message.edit({
     permissionOverwrites: [
     {

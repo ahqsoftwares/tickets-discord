@@ -1,6 +1,6 @@
 {
     "name": "tickets-discord",
-    "version": "2.6.6",
+    "version": "2.6.7",
     "description": "Easy Ticket Setup for Discord.js v13",
     "main": "index.js",
     "bin": "index.js",
@@ -37,6 +37,7 @@
     "dependencies": {
         "discord.js": "^13.2.0",
         "process": "^0.11.10",
-        "mongquick": "git+https://github.com/ahqsoftwares/quickmongo.git"
+        "mongquick": "git+https://github.com/ahqsoftwares/quickmongo.git",
+        "quick.db": "^7.1.3"
     }
 }

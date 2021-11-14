@@ -41,6 +41,7 @@ let {
 ```
 ticket.login("MongoDB url")
 ```
+You can use `local` instead of a mongodb url to make a local DB
 ### Declaration
 ```
 const ticket = require('tickets-discord');
