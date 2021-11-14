@@ -148,6 +148,7 @@ async function unarchive(channel){
     }
     mid = (settings.get(channel.id));
   }
+  await delay(1500)
   channel.edit({
     permissionOverwrites: [
     {
