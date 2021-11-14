@@ -72,3 +72,8 @@ Genarally the close button is already given in this ticket welcome and also you 
 ```
 ticket.close(message.channel //the message channel parameter)
 ```
+
+# Whats new in 2.7.0 🎉
+## We added new `local` db option ☑
+
+## Fixed bugs 🐛
