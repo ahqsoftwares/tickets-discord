@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const {DB} = require('mongquick');
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var settings, type;
+var settings, type, mid;
 async function login(url) {
   if (url == 'local') {
     type = "quick";
@@ -138,7 +138,7 @@ async function unarchive(channel){
       })
       return
     }
-    let mid = (await(settings.get(channel.id)));
+    mid = (await(settings.get(channel.id)));
   } else {
     if (!((settings.has(channel.id)))) {
       channel.send({
@@ -146,9 +146,8 @@ async function unarchive(channel){
       })
       return
     }
-    let mid = (settings.get(channel.id));
+    mid = (settings.get(channel.id));
   }
-  await delay(2500);
   channel.edit({
     permissionOverwrites: [
     {
