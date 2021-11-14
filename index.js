@@ -131,12 +131,10 @@ async function setup(message,channelID){
     if (!(message.guild.roles.cache.find(role => role.name == "Ticket"))) {
 
 message.guild.roles.create({
-    data: {
-        name: "Ticket",
-        color: "#ff0000"
-    }
+    name: "Ticket",
+    color: "#ff0000"
 }).then(role => {
-    role.setPermissions([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]);
+    role.setPermissions([Discord.Permissions.FLAGS.VIEW_CHANNEL, Discord.Permissions.FLAGS.SEND_MESSAGES]);
     role.setMentionable(false);
     message.channel.send(`Role \`${role.name}\` created and ticket system success!`);
 });
