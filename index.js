@@ -113,8 +113,8 @@ async function setup(message,channelID){
         new Discord.MessageEmbed()
           .setTitle("Ticket System")
           .setDescription("Click to open a ticket!")
-          .setFooter("Ticket System")
-          .setColor("00ff00")
+          .setFooter(`Secure ticketing for ${message.guild.name}`)
+          .setColor("RANDOM")
       ],
       components: [
             new Discord.MessageActionRow().addComponents(
@@ -128,7 +128,21 @@ async function setup(message,channelID){
     }).then(sent => {
       settings.set(`${message.guild.id}-ticket`, channelID);
     });
-      message.channel.send("Ticket System Setup Done!");
+    if (!(message.guild.roles.cache.find(role => role.name == "Ticket"))) {
+
+message.guild.roles.create({
+    data: {
+        name: "Ticket",
+        color: "#ff0000"
+    }
+}).then(role => {
+    role.setPermissions([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]);
+    role.setMentionable(false);
+    message.channel.send(`Role \`${role.name}\` created and ticket system success!`);
+});
+    } else {
+      message.channel.send(`Role \`Ticket\` was found and ticket system success!`);
+    }
 }
 async function unarchive(channel){
   if (type == 'mongo') {

@@ -93,3 +93,5 @@ ticket.close(message.channel //the message channel parameter)
 ## Fixed bugs 🐛
 
 ## Updated examples 🔼
+
+## Added create role if not exists 📢

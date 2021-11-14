@@ -1,6 +1,6 @@
 {
     "name": "tickets-discord",
-    "version": "2.7.1",
+    "version": "2.7.2",
     "description": "Easy Ticket Setup for Discord.js v13",
     "main": "index.js",
     "bin": "index.js",
