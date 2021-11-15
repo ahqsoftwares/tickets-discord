@@ -1,6 +1,6 @@
 {
     "name": "tickets-discord",
-    "version": "2.7.5",
+    "version": "2.7.6",
     "description": "Easy Ticket Setup for Discord.js v13",
     "main": "index.js",
     "bin": "index.js",
@@ -24,7 +24,9 @@
         "ticket discord",
         "discord",
         "easy-ticket",
-        "ticket"
+        "ticket",
+        "archive ticket",
+        "unarchive ticket"
     ],
     "repository": {
         "type": "git",

@@ -47,7 +47,7 @@ let {
 ```
 const ticket = require('tickets-discord');
 
-ticket.start(client //client)
+ticket.start(client) //client
 
 //Login with MongoDB/Local DB
 ticket.login("MongoDB url")
@@ -58,7 +58,7 @@ Example
 ```
 const ticket = require('tickets-discord');
 
-ticket.start(client //client)
+ticket.start(client) //client
 
 //Login with MongoDB/Local DB
 ticket.login("local")
@@ -67,25 +67,25 @@ ticket.login("local")
 ### Make ticket 🎫
 
 ```
-ticket.setup(message/interaction, channelID//ticket setup channel id)
+ticket.setup(message/interaction, channelID)//message, ticket setup channel id
 ```
 ### Archiving a ticket 🎫
 The button archives the ticket also you can use 
 
 ```
-ticket.archive(messsage.channel //message channel parameter)
+ticket.archive(messsage.channel) //message channel parameter
 ```
 
 ### Unarchiving a ticket 🎫
 
 ```
-ticket.archive(messsage.channel //message channel parameter)
+ticket.archive(messsage.channel) //message channel parameter
 ```
 ### Closing a ticket 🎫
 Genarally the close button is already given in this ticket welcome and also you can delete a ticket by using.
 
 ```
-ticket.close(message.channel //the message channel parameter)
+ticket.close(message.channel) //the message channel parameter
 ```
 
 # Whats new in 2.7.5 🎉
