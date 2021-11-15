@@ -23,7 +23,8 @@
         "ticket systen",
         "ticket discord",
         "discord",
-        "easy-ticket"
+        "easy-ticket",
+        "ticket"
     ],
     "repository": {
         "type": "git",
