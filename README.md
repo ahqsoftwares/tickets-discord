@@ -1,5 +1,6 @@
 # Example 🔍
 ```
+//js
 let {
         Discord,
         Client,
