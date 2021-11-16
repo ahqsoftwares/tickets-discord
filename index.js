@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const {DB} = require('mongquick');
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var settings, type, mid;
+var settings, type, mid, bot;
 async function login(url) {
   if (url == 'local') {
     type = "quick";
@@ -14,7 +14,7 @@ async function login(url) {
 
 async function start(client){
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
-
+bot = client;
 client.on("interactionCreate", async (interaction) => {
   if (!(interaction.isButton())) return;
   if (!(interaction.customId == 'cr')) return;
@@ -35,6 +35,7 @@ client.on("interactionCreate", async (interaction) => {
 });
 }
 async function ticket(interaction) {
+  if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
   let reaction = interaction;
   reaction.guild.channels
   .create(`ticket-${interaction.member.user.username}`, {
@@ -107,6 +108,7 @@ async function ticket(interaction) {
   });
 }
 async function setup(message,channelID){
+  if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
     const channel = message.guild.channels.cache.find(channel => channel.id === channelID);
     channel.send({
       embeds: [
@@ -143,6 +145,7 @@ message.guild.roles.create({
     }
 }
 async function unarchive(channel){
+  if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
   if (type == 'mongo') {
     if (!(await(settings.has(channel.id)))) {
       channel.send({
@@ -184,6 +187,7 @@ async function unarchive(channel){
   })
 }
 async function archive(message){
+  if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
   if (!message.name.includes("ticket-")){
     message.send("You cannot use that here!");
     return 
@@ -204,6 +208,7 @@ async function archive(message){
 });
 }
 async function close(message){
+  if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
   if (!message.name.includes("ticket-")){
   message.send("You cannot use that here!");
   return 
