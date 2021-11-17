@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const {DB} = require('mongquick');
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var settings, type, mid, bot;
+var settings, type, mid, bot, r;
 async function login(url) {
   if (url == 'local') {
     type = "quick";
@@ -24,17 +24,17 @@ client.on("interactionCreate", async (interaction) => {
   if (type == 'mongo') {
   if (!(await(settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == (await(settings.get(`${interaction.message.guild.id}-ticket`)))) {
-    ticket(interaction);
+    ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))));
   }
 } else {
   if (!((settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == ((settings.get(`${interaction.message.guild.id}-ticket`)))) {
-    ticket(interaction);
+    ticket(interaction, settings.get(`r${interaction.guild.id}`));
   }
 }
 });
 }
-async function ticket(interaction) {
+async function ticket(interaction, rname) {
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
   let reaction = interaction;
   reaction.guild.channels
@@ -50,7 +50,7 @@ async function ticket(interaction) {
       },
       {
         id: reaction.guild.roles.cache.find(
-          role => role.name === "Ticket"
+          role => role.name === String(rname)
         ),
         allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
       }
@@ -110,39 +110,127 @@ async function ticket(interaction) {
 async function setup(message,channelID){
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
     const channel = message.guild.channels.cache.find(channel => channel.id === channelID);
-    channel.send({
-      embeds: [
-        new Discord.MessageEmbed()
-          .setTitle("Ticket System")
-          .setDescription("Click to open a ticket!")
-          .setFooter(`Secure ticketing for ${message.guild.name}`)
-          .setColor("RANDOM")
-      ],
-      components: [
-            new Discord.MessageActionRow().addComponents(
-              new Discord.MessageButton()
-              .setStyle('SUCCESS')
-              .setLabel("Open Ticket")
-              .setCustomId('cr')
-              .setEmoji('🎫')
-            )
-          ]
-    }).then(sent => {
-      settings.set(`${message.guild.id}-ticket`, channelID);
+    let s4dmessage = message;
+    message.channel.send({
+        embeds: [
+          new Discord.MessageEmbed()
+            .setTitle("Ticket System")
+            .setDescription("Chose your settings")
+            .setFooter(`Secure ticketing for ${message.guild.name}`)
+            .setColor("RANDOM")
+        ],
+        components: [
+              new Discord.MessageActionRow().addComponents(
+                new Discord.MessageButton()
+                .setStyle('PRIMARY')
+                .setLabel("Use Default Settings!")
+                .setCustomId('pri')
+                .setEmoji('🥇'),
+                new Discord.MessageButton()
+                .setStyle('SECONDARY')
+                .setLabel("Use Custom Settings!")
+                .setCustomId('sec')
+                .setEmoji('🥈')
+              )
+            ]
+      }).then(sent => {
+        let collector = sent.createMessageComponentCollector({
+            max: 3
+        });
+        collector.on('collect', async i => {
+        if (i.user.id !== message.member.user.id) {
+            await i.reply({
+              content: String("Its not for you!"), 
+              ephemeral: true
+            })
+            return
+        }
+        if (i.customId == 'pri') {
+            await i.reply({
+                content: String("Setting up!"), 
+                ephemeral: true
+            });
+            issue(message, channel, 'Click to open a ticket!', "Ticket");
+        }
+        if (ticket.customId == 'sec') {
+            await i.reply({
+                content: String("Setting up!"), 
+                ephemeral: true
+            });
+            (s4dmessage.channel).send(String('Ticket message (Description)')).then(() => {
+                (s4dmessage.channel).awaitMessages({
+                    filter: (m) => m.author.id === (s4dmessage.member).id,
+                    time: (1 * 60 * 1000),
+                    max: 1
+                }).then(async (collected) => {
+                    mess = collected.first().content;
+                    s4d.message = collected.first();
+                    (s4dmessage.channel).send(String('Your custom role name')).then(() => {
+                        (s4dmessage.channel).awaitMessages({
+                            filter: (m) => m.author.id === (s4dmessage.member).id,
+                            time: (1 * 60 * 1000),
+                            max: 1
+                        }).then(async (collected) => {
+                            rolen = collected.first().content;
+                            s4d.message = collected.first();
+                            issue(message, channel, mess, rolen);
+                            s4d.reply = null;
+                        }).catch(async (e) => {
+                            console.error(e);
+                            s4dmessage.channel.send({
+                                content: String('Discarded!')
+                            });
+                        });
+                    })
+    
+                    s4d.reply = null;
+                }).catch(async (e) => {
+                    console.error(e);
+                    s4dmessage.channel.send({
+                        content: String('Discarded!')
+                    });
+                });
+            })
+        }
+        collector.stop()
     });
-    if (!(message.guild.roles.cache.find(role => role.name == "Ticket"))) {
-
-message.guild.roles.create({
-    name: "Ticket",
-    color: "#ff0000"
-}).then(role => {
-    role.setPermissions([Discord.Permissions.FLAGS.VIEW_CHANNEL, Discord.Permissions.FLAGS.SEND_MESSAGES]);
-    role.setMentionable(false);
-    message.channel.send(`Role \`${role.name}\` created and ticket system success!`);
-});
-    } else {
-      message.channel.send(`Role \`Ticket\` was found and ticket system success!`);
+      });
     }
+async function issue(message, channel, msg, rolename){
+    channel.send({
+        embeds: [
+          new Discord.MessageEmbed()
+            .setTitle("Ticket System")
+            .setDescription(String(msg))
+            .setFooter(`Secure ticketing for ${message.guild.name}`)
+            .setColor("RANDOM")
+        ],
+        components: [
+              new Discord.MessageActionRow().addComponents(
+                new Discord.MessageButton()
+                .setStyle('SUCCESS')
+                .setLabel("Open Ticket")
+                .setCustomId('cr')
+                .setEmoji('🎫')
+              )
+            ]
+      }).then(sent => {
+        settings.set(`${message.guild.id}-ticket`, channel.id);
+      });
+      if (!(message.guild.roles.cache.find(role => role.name == rolename))) {
+
+        message.guild.roles.create({
+            name: String(rolename),
+            color: "#ff0000"
+        }).then(role => {
+            role.setPermissions([Discord.Permissions.FLAGS.VIEW_CHANNEL, Discord.Permissions.FLAGS.SEND_MESSAGES]);
+            role.setMentionable(false);
+            settings.set(`r${message.guild.id}`, role.id);
+            message.channel.send(`Role \`${rolename}\` created and ticket system success!`);
+        });
+            } else {
+              message.channel.send(`Role \`${rolename}\` was found and ticket system success!`);
+            }
 }
 async function unarchive(channel){
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
@@ -154,6 +242,7 @@ async function unarchive(channel){
       return
     }
     mid = (await(settings.get(channel.id)));
+    r = (await(settings.get(`r${channel.guild.id}`)));
   } else {
     if (!((settings.has(channel.id)))) {
       channel.send({
@@ -162,6 +251,7 @@ async function unarchive(channel){
       return
     }
     mid = (settings.get(channel.id));
+    r = (settings.get(`r${channel.guild.id}`));
   }
   await delay(1500)
   channel.edit({
@@ -200,7 +290,7 @@ async function archive(message){
     },
     {
       id: message.guild.roles.cache.find(
-        role => role.name === "Ticket"
+        role => role.name === String(r)
       ),
       allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
     }
