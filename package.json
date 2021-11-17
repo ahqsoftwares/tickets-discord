@@ -2,7 +2,7 @@
     "name": "tickets-discord",
     "version": "2.7.7",
     "description": "Easy Ticket Setup for Discord.js v13",
-    "main": "index.js",
+    "main": "indexdev.js",
     "bin": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
