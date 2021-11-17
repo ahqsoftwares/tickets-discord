@@ -288,15 +288,25 @@ async function edit(channel, rname, mid) {
       max: 3
     });
     collector.on('collect', async i => {
-      if (!(i.user.id !== mid)) {
-        await i.reply({
-          content: String("You are not the ticket issuer"), 
-          ephemeral: true
-        })
-        return
-      }
+      await i.reply({
+        content: String(`Ok <@${i.user.id}>`)
+      })
       archive(channel);
       collector.stop();
+    });
+    collector.on('end', async i => {
+      f.edit({
+        content: `Hello <@${mid}>\nThe ticket was reopened by a staff member!`,
+    components: [new Discord.MessageActionRow()
+    .addComponents(
+      new Discord.MessageButton()
+      .setStyle("DANGER")
+      .setLabel("Lock")
+      .setEmoji("🔒")
+      .setCustomId('lk')
+      .setDisabled(true)
+    )]
+      });
     })
   });
 }
