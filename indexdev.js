@@ -110,6 +110,7 @@ async function ticket(interaction) {
 async function setup(message,channelID){
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
     const channel = message.guild.channels.cache.find(channel => channel.id === channelID);
+    let s4dmessage = message;
     message.channel.send({
         embeds: [
           new Discord.MessageEmbed()
@@ -137,7 +138,7 @@ async function setup(message,channelID){
             max: 3
         });
         collector.on('collect', async i => {
-        if (i.user.id !== interaction.member.user.id) {
+        if (i.user.id !== message.member.user.id) {
             await i.reply({
               content: String("Its not for you!"), 
               ephemeral: true
