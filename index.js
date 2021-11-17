@@ -232,6 +232,7 @@ async function issue(message, channel, msg, rolename){
         });
             } else {
               message.channel.send(`Role \`${rolename}\` was found and ticket system success!`);
+              settings.set(`r${message.guild.id}`, ((message.guild.roles.cache.find(role => role.name == rolename)).id));
             }
 }
 async function unarchive(channel){
