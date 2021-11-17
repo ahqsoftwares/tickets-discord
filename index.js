@@ -50,7 +50,7 @@ async function ticket(interaction, rname) {
       },
       {
         id: reaction.guild.roles.cache.find(
-          role => role.name === String(rname)
+          role => role.id === rname
         ),
         allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
       }
@@ -163,18 +163,20 @@ async function setup(message,channelID){
                     time: (1 * 60 * 1000),
                     max: 1
                 }).then(async (collected) => {
-                    mess = collected.first().content;
-                    s4d.message = collected.first();
+                    reply = collected.first().content;
+                    mess = reply;
+                    message = collected.first();
                     (s4dmessage.channel).send(String('Your custom role name')).then(() => {
                         (s4dmessage.channel).awaitMessages({
                             filter: (m) => m.author.id === (s4dmessage.member).id,
                             time: (1 * 60 * 1000),
                             max: 1
                         }).then(async (collected) => {
-                            rolen = collected.first().content;
-                            s4d.message = collected.first();
+                            reply = collected.first().content;
+                            rolen = reply;
+                            message = collected.first();
                             issue(message, channel, mess, rolen);
-                            s4d.reply = null;
+                            reply = null;
                         }).catch(async (e) => {
                             console.error(e);
                             s4dmessage.channel.send({
@@ -183,7 +185,7 @@ async function setup(message,channelID){
                         });
                     })
     
-                    s4d.reply = null;
+                    reply = null;
                 }).catch(async (e) => {
                     console.error(e);
                     s4dmessage.channel.send({
@@ -266,7 +268,7 @@ async function edit(channel, rname, mid) {
     },
     {
       id: channel.guild.roles.cache.find(
-        role => role.name === String(rname)
+        role => role.id === rname
       ),
       allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
     }
@@ -294,7 +296,7 @@ async function ar(message, rname){
     },
     {
       id: message.guild.roles.cache.find(
-        role => role.name === String(rname)
+        role => role.id === rname
       ),
       allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
     }
