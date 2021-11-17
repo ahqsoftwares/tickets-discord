@@ -88,11 +88,10 @@ Genarally the close button is already given in this ticket welcome and also you 
 ticket.close(message.channel) //the message channel parameter
 ```
 
-# Whats new in 2.7.5 🎉
+# Whats new in 2.9.0 🎉
 
 ## We added new `local` db option ☑
 ## Fixed bugs 🐛
-
 ## Updated examples 🔼
-
 ## Added create role if not exists 📢
+## Added custom settings ⚙

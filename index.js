@@ -253,7 +253,6 @@ async function unarchive(channel){
     }
     edit(channel, (settings.get(`r${channel.guild.id}`)), (settings.get(channel.id)));
   }
-  await delay(1500)
 }
 async function edit(channel, rname, mid) {
   channel.edit({
@@ -273,6 +272,32 @@ async function edit(channel, rname, mid) {
       allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
     }
   ]
+  });
+  channel.send({
+    content: `Hello <@${mid}>\nThe ticket was reopened by a staff member!`,
+    components: [new Discord.MessageActionRow()
+    .addComponents(
+      new Discord.MessageButton()
+      .setStyle("DANGER")
+      .setLabel("Lock")
+      .setEmoji("🔒")
+      .setCustomId('lk')
+    )]
+  }).then(async f => {
+    let collector = f.createMessageComponentCollector({
+      max: 3
+    });
+    collector.on('collect', async i => {
+      if (!(i.user.id !== mid)) {
+        await i.reply({
+          content: String("You are not the ticket issuer"), 
+          ephemeral: true
+        })
+        return
+      }
+      archive(channel);
+      collector.stop();
+    })
   });
 }
 async function archive(message){
@@ -309,7 +334,8 @@ async function close(message){
   message.send("You cannot use that here!");
   return 
   }
-message.delete()
+  settings.delete(message.id);
+message.delete();
 }
 module.exports.setup = setup
 module.exports.login = login
