@@ -138,7 +138,7 @@ async function setup(message,channelID){
             max: 3
         });
         collector.on('collect', async i => {
-        if (i.user.id !== message.member.user.id) {
+        if (i.user.id !== (message.member).id) {
             await i.reply({
               content: String("Its not for you!"), 
               ephemeral: true
@@ -152,7 +152,7 @@ async function setup(message,channelID){
             });
             issue(message, channel, 'Click to open a ticket!', "Ticket");
         }
-        if (ticket.customId == 'sec') {
+        if (i.customId == 'sec') {
             await i.reply({
                 content: String("Setting up!"), 
                 ephemeral: true
@@ -241,8 +241,7 @@ async function unarchive(channel){
       })
       return
     }
-    mid = (await(settings.get(channel.id)));
-    r = (await(settings.get(`r${channel.guild.id}`)));
+    edit(channel, (await(settings.get(`r${channel.guild.id}`))), (await(settings.get(channel.id))));
   } else {
     if (!((settings.has(channel.id)))) {
       channel.send({
@@ -250,10 +249,11 @@ async function unarchive(channel){
       })
       return
     }
-    mid = (settings.get(channel.id));
-    r = (settings.get(`r${channel.guild.id}`));
+    edit(channel, (settings.get(`r${channel.guild.id}`)), (settings.get(channel.id)));
   }
   await delay(1500)
+}
+async function edit(channel, rname, mid) {
   channel.edit({
     permissionOverwrites: [
     {
@@ -266,15 +266,12 @@ async function unarchive(channel){
     },
     {
       id: channel.guild.roles.cache.find(
-        role => role.name === "Ticket"
+        role => role.name === String(rname)
       ),
       allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
     }
   ]
   });
-  channel.send({
-    content: String(`Hello <@${mid}> \n The ticket was reopened by a staff member`)
-  })
 }
 async function archive(message){
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
@@ -282,6 +279,13 @@ async function archive(message){
     message.send("You cannot use that here!");
     return 
     }
+    if (type == 'mongo') {
+      ar(message, (await(settings.get(`r${message.guild.id}`))));
+    } else {
+      ar(message, (settings.get(`r${message.guild.id}`)));
+    }
+}
+async function ar(message, rname){
   message.edit({
     permissionOverwrites: [
     {
@@ -290,7 +294,7 @@ async function archive(message){
     },
     {
       id: message.guild.roles.cache.find(
-        role => role.name === String(r)
+        role => role.name === String(rname)
       ),
       allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
     }
