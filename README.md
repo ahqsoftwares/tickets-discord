@@ -20,8 +20,7 @@ let {
     
     const ticket = require('tickets-discord');
     
-    ticket.start(client) //defined client
-    ticket.login("MONGODB url")  // you can write 'local' here also!
+    ticket.start(client, "MONGODB url") //defined client, mongodb url
 
     client.on('messageCreate', async (message) => {
     if (message.content.startsWith('n!ticket')) {
@@ -47,10 +46,8 @@ let {
 ```
 const ticket = require('tickets-discord');
 
-ticket.start(client) //client
-
 //Login with MongoDB/Local DB
-ticket.login("MongoDB url")
+ticket.start(client, "URL") //client
 ```
 You can use `local` instead of a mongodb url to make a local DB.
 
@@ -58,10 +55,9 @@ Example
 ```
 const ticket = require('tickets-discord');
 
-ticket.start(client) //client
-
 //Login with MongoDB/Local DB
-ticket.login("local")
+ticket.start(client, "local") //client
+
 //This will make a local quickdb database!
 ```
 ### Make ticket 🎫

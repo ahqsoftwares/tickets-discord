@@ -1,18 +1,18 @@
 const Discord = require("discord.js");
 const {DB} = require('mongquick');
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var settings, type, mid, bot, r;
-async function login(url) {
+var settings, type, mid, bot, r, log;
+async function start(client, url, logs){
   if (url == 'local') {
     type = "quick";
     settings = require('quick.db');
-    return
+  } else {
+    type = 'mongo';
+    settings = new DB(url);
   }
-  type = 'mongo';
-  settings = new DB(url);
-}
-
-async function start(client){
+  if (logs == true) {
+    log = true
+  }
 if(!client) throw new Error("Client not provided, Ticket system will not be working.")
 bot = client;
 client.on("interactionCreate", async (interaction) => {
@@ -349,7 +349,6 @@ async function close(message){
 message.delete();
 }
 module.exports.setup = setup
-module.exports.login = login
 module.exports.start = start
 module.exports.close = close
 module.exports.archive = archive
