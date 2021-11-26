@@ -195,7 +195,7 @@ async function setup(message,channelID){
                             rolen = reply;
                             message = collected.first();
                             if (log == true) {
-                              (s4dmessage.channel).send(String('Ticket message (Description)')).then(() => {
+                              (s4dmessage.channel).send(String('Your Ticket Logs channel name!')).then(() => {
                                 (s4dmessage.channel).awaitMessages({
                                     filter: (m) => m.author.id === (s4dmessage.member).id,
                                     time: (1 * 60 * 1000),
@@ -296,9 +296,9 @@ async function issue(message, channel, msg, rolename, logname){
             ],
             type: "text"
           })
-          .then(ch => {
-            settings.set(`logs${message.guild.id}`, ch.id)
-            ch.send({
+          .then(cha => {
+            settings.set(`logs${message.guild.id}`, cha.id)
+            cha.send({
               embeds: [new Discord.MessageEmbed()
                 .setTitle("Ticket Logs Channel!")
                 .setDescription(`Ticket logs will be posted in ${ch}`)
