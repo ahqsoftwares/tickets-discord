@@ -24,17 +24,24 @@ client.on("interactionCreate", async (interaction) => {
   if (type == 'mongo') {
   if (!(await(settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == (await(settings.get(`${interaction.message.guild.id}-ticket`)))) {
+    if (log == true) {
+      ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))), (await(settings.get(`logs${interaction.guild.id}`))));  
+    }
     ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))));
   }
 } else {
   if (!((settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == ((settings.get(`${interaction.message.guild.id}-ticket`)))) {
+    if (log = true) {
+      ticket(interaction, settings.get(`r${interaction.guild.id}`), settings.get(`logs${interaction.guild.id}`));
+      return
+    }
     ticket(interaction, settings.get(`r${interaction.guild.id}`));
   }
 }
 });
 }
-async function ticket(interaction, rname) {
+async function ticket(interaction, rname, logname) {
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
   let reaction = interaction;
   reaction.guild.channels
@@ -58,6 +65,18 @@ async function ticket(interaction, rname) {
     type: "text"
   })
   .then(async channel => {
+    if (log = true) {
+      logc = (channel.guild.channels.cache.find(ch => ch.name == logname));
+      logc.send({
+          embeds: [new Discord.MessageEmbed()
+            .setTitle("New Ticket")
+            .setDescription(`${channel.name}`)
+            .addField("Staff role", `<@&${rname}>`, false)
+            .setFooter(`Secure Ticketing for ${message.guild.id}`)
+            .setTimestamp()
+          ]
+      })
+    }
     settings.set(channel.id, interaction.member.user.id);
     channel.send({
       content: String(`<@${interaction.member.user.id}>\nStaff of <@&${rname}> please be online with us!`),
@@ -293,6 +312,7 @@ async function issue(message, channel, msg, rolename, logname){
           })
         } else {
           channel = (message.guild.channels.cache.find(ch => ch.name == logname));
+          settings.set(`logs${message.guild.id}`, channel.id)
           channel.send({
             embeds: [new Discord.MessageEmbed()
               .setTitle("Ticket Logs Channel!")
@@ -416,6 +436,29 @@ async function close(message){
   }
   settings.delete(message.id);
 message.delete();
+if (log == true) {
+  if (type == 'mongo') {
+  logc = (channel.guild.channels.cache.find(ch => ch.name == (await(settings.get(`logs${message.guild.id}`)))));
+      logc.send({
+          embeds: [new Discord.MessageEmbed()
+            .setTitle("Ticket Closed")
+            .setDescription(`${message.name}`)
+            .setFooter(`Secure Ticketing for ${message.guild.id}`)
+            .setTimestamp()
+          ]
+  })
+  } else {
+    logc = (channel.guild.channels.cache.find(ch => ch.name == ((settings.get(`logs${message.guild.id}`)))));
+      logc.send({
+          embeds: [new Discord.MessageEmbed()
+            .setTitle("Ticket Closed")
+            .setDescription(`${message.name}`)
+            .setFooter(`Secure Ticketing for ${message.guild.id}`)
+            .setTimestamp()
+          ]
+  })
+  }
+}
 }
 module.exports.setup = setup
 module.exports.start = start
