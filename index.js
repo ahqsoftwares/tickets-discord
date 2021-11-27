@@ -301,7 +301,7 @@ async function issue(message, channel, msg, rolename, logname){
             type: "text"
           })
           .then(cha => {
-            settings.set(`logs${message.guild.id}`, cha.id)
+            settings.set(`logs${message.guild.id}`, cha.id);
             cha.send({
               embeds: [new Discord.MessageEmbed()
                 .setTitle("Ticket Logs Channel!")
@@ -315,7 +315,7 @@ async function issue(message, channel, msg, rolename, logname){
             throw new Error(`Error creating channel CODE: ${e}`)
           })
         } else {
-          settings.set(`logs${message.guild.id}`, ((message.guild.channels.cache.find(ch => ch.name == logname)).id))
+          settings.set(`logs${message.guild.id}`, ((message.guild.channels.cache.find(ch => ch.name == logname)).id));
           (message.guild.channels.cache.find(channels => channels.name == String(logname))).send({
             embeds: [new Discord.MessageEmbed()
               .setTitle("Ticket Logs Channel!")
