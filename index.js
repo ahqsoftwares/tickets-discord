@@ -169,7 +169,11 @@ async function setup(message,channelID){
                 content: String("Setting up!"), 
                 ephemeral: true
             });
+            if (log == true) {
             issue(message, channel, 'Click to open a ticket!', "Ticket", 'logs-ticket');
+            } else {
+              issue(message, channel, 'Click to open a ticket!', "Ticket");
+            }
         }
         if (i.customId == 'sec') {
             await i.reply({
@@ -201,8 +205,8 @@ async function setup(message,channelID){
                                     time: (1 * 60 * 1000),
                                     max: 1
                                 }).then(async (collected) => {
-                                  let ans = collected.first().content;
-                                  issue(message, channel, mess, rolen, ans)
+                                  let channelname = collected.first().content;
+                                  issue(message, channel, mess, rolen, channelname)
                                 }).catch(async (e) => {
                                   console.error(e);
                                   s4dmessage.channel.send({
@@ -280,8 +284,8 @@ async function issue(message, channel, msg, rolename, logname){
               settings.set(`r${message.guild.id}`, ((message.guild.roles.cache.find(role => role.name == rolename)).id));
             }
       if (!(logname == null)) {
-        if (!(message.guild.channels.cache.find(ch => ch.name == logname))) {
-          message.guild.channels.create(`ticket-${interaction.member.user.username}`, {
+        if (!(message.guild.channels.find(ch => ch.name == logname))) {
+          message.guild.channels.create(`${logname}`, {
             permissionOverwrites: [
               {
                 id: message.guild.id,
@@ -311,7 +315,7 @@ async function issue(message, channel, msg, rolename, logname){
             throw new Error(`Error creating channel CODE: ${e}`)
           })
         } else {
-          channel = (message.guild.channels.cache.find(ch => ch.name == logname));
+          channel = (message.guild.channels.find(channels => channels.name == String(logname)));
           settings.set(`logs${message.guild.id}`, channel.id)
           channel.send({
             embeds: [new Discord.MessageEmbed()
