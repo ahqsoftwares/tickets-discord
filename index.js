@@ -315,9 +315,8 @@ async function issue(message, channel, msg, rolename, logname){
             throw new Error(`Error creating channel CODE: ${e}`)
           })
         } else {
-          channel = (message.guild.channels.find(channels => channels.name == String(logname)));
-          settings.set(`logs${message.guild.id}`, channel.id)
-          channel.send({
+          settings.set(`logs${message.guild.id}`, (message.guild.channels.find(channels => channels.name == String(logname))).id)
+          (message.guild.channels.find(channels => channels.name == String(logname))).send({
             embeds: [new Discord.MessageEmbed()
               .setTitle("Ticket Logs Channel!")
               .setDescription(`Ticket logs will be posted in ${ch}`)
@@ -442,8 +441,7 @@ async function close(message){
 message.delete();
 if (log == true) {
   if (type == 'mongo') {
-  logc = (channel.guild.channels.cache.find(ch => ch.name == (await(settings.get(`logs${message.guild.id}`)))));
-      logc.send({
+  (channel.guild.channels.cache.find(ch => ch.name == (await(settings.get(`logs${message.guild.id}`))))).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("Ticket Closed")
             .setDescription(`${message.name}`)
@@ -452,8 +450,7 @@ if (log == true) {
           ]
   })
   } else {
-    logc = (channel.guild.channels.cache.find(ch => ch.name == ((settings.get(`logs${message.guild.id}`)))));
-      logc.send({
+    (channel.guild.channels.cache.find(ch => ch.name == ((settings.get(`logs${message.guild.id}`))))).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("Ticket Closed")
             .setDescription(`${message.name}`)
