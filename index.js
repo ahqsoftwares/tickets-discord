@@ -72,7 +72,7 @@ async function ticket(interaction, rname, logname) {
             .setTitle("New Ticket")
             .setDescription(`${channel.name}`)
             .addField("Staff role", `<@&${rname}>`, false)
-            .setFooter(`Secure Ticketing for ${message.guild.id}`)
+            .setFooter(`Secure Ticketing for ${channel.guild.id}`)
             .setTimestamp()
           ]
       })
