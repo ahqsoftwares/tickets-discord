@@ -293,7 +293,7 @@ async function issue(message, channel, msg, rolename, logname){
               },
               {
                 id: message.guild.roles.cache.find(
-                  role => role.id === rolename
+                  role => role.name === rolename
                 ),
                 allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
               }
