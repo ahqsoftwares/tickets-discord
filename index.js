@@ -70,6 +70,7 @@ async function ticket(interaction, rname, logname) {
       (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("New Ticket")
+            .setColor("GREEN")
             .setDescription(`${channel.name}`)
             .addField("Staff role", `<@&${rname}>`, false)
             .setFooter(`Secure Ticketing for ${channel.guild.id}`)
@@ -305,6 +306,7 @@ async function issue(message, channel, msg, rolename, logname){
             cha.send({
               embeds: [new Discord.MessageEmbed()
                 .setTitle("Ticket Logs Channel!")
+                .setColor("YELLOW")
                 .setDescription(`Ticket logs will be posted in ${cha}`)
                 .setFooter(`Secure Ticketing for ${message.guild.id}`)
                 .setTimestamp()
@@ -319,6 +321,7 @@ async function issue(message, channel, msg, rolename, logname){
           (message.guild.channels.cache.find(channels => channels.name == String(logname))).send({
             embeds: [new Discord.MessageEmbed()
               .setTitle("Ticket Logs Channel!")
+              .setColor("YELLOW")
               .setDescription(`Ticket logs will be posted in ${(message.guild.channels.cache.find(ch => ch.name == logname))}`)
               .setFooter(`Secure Ticketing for ${message.guild.id}`)
               .setTimestamp()
@@ -336,6 +339,10 @@ async function unarchive(channel){
       })
       return
     }
+    if (log == true) {
+      edit(channel, (await(settings.get(`r${channel.guild.id}`))), (await(settings.get(channel.id))), (await(settings.get(`logs${channel.guild.id}`))));
+      return
+      }
     edit(channel, (await(settings.get(`r${channel.guild.id}`))), (await(settings.get(channel.id))));
   } else {
     if (!((settings.has(channel.id)))) {
@@ -344,10 +351,14 @@ async function unarchive(channel){
       })
       return
     }
+    if (log == true) {
+    edit(channel, (settings.get(`r${channel.guild.id}`)), (settings.get(channel.id)), settings.get(`logs${channel.guild.id}`));
+    return
+    }
     edit(channel, (settings.get(`r${channel.guild.id}`)), (settings.get(channel.id)));
   }
 }
-async function edit(channel, rname, mid) {
+async function edit(channel, rname, mid, logname) {
   channel.edit({
     permissionOverwrites: [
     {
@@ -366,6 +377,17 @@ async function edit(channel, rname, mid) {
     }
   ]
   });
+  if (log = true) {
+    (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
+        embeds: [new Discord.MessageEmbed()
+          .setTitle("Ticket UnArchive")
+          .setColor("GREEN")
+          .setDescription(`${channel.name}`)
+          .setFooter(`Secure Ticketing for ${channel.guild.id}`)
+          .setTimestamp()
+        ]
+    })
+  }
   channel.send({
     content: `Hello <@${mid}>\nThe ticket was reopened by a staff member!`,
     components: [new Discord.MessageActionRow()
@@ -410,12 +432,21 @@ async function archive(message){
     return 
     }
     if (type == 'mongo') {
+      if (log == true) {
+      ar(message, (await(settings.get(`r${message.guild.id}`))), (await(settings.get(`logs${message.guild.id}`))));
+      return
+      }
       ar(message, (await(settings.get(`r${message.guild.id}`))));
     } else {
+      if(log == true) {
+      ar(message, (settings.get(`r${message.guild.id}`)), settings.get(`logs${message.guild.id}`));
+      return
+      }
       ar(message, (settings.get(`r${message.guild.id}`)));
     }
 }
-async function ar(message, rname){
+async function ar(message, rname, logname){
+  let channel = message;
   message.edit({
     permissionOverwrites: [
     {
@@ -430,6 +461,17 @@ async function ar(message, rname){
     }
   ]
 });
+if (log = true) {
+  (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
+      embeds: [new Discord.MessageEmbed()
+        .setTitle("Ticket Archive")
+        .setColor("YELLOW")
+        .setDescription(`${channel.name}`)
+        .setFooter(`Secure Ticketing for ${channel.guild.id}`)
+        .setTimestamp()
+      ]
+  })
+}
 }
 async function close(message){
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
@@ -444,6 +486,7 @@ if (log == true) {
   (channel.guild.channels.cache.find(ch => ch.id == (await(settings.get(`logs${message.guild.id}`))))).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("Ticket Closed")
+            .setColor("RED")
             .setDescription(`${message.name}`)
             .setFooter(`Secure Ticketing for ${message.guild.id}`)
             .setTimestamp()
@@ -453,6 +496,7 @@ if (log == true) {
     (channel.guild.channels.cache.find(ch => ch.id == ((settings.get(`logs${message.guild.id}`))))).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("Ticket Closed")
+            .setColor("RED")
             .setDescription(`${message.name}`)
             .setFooter(`Secure Ticketing for ${message.guild.id}`)
             .setTimestamp()
