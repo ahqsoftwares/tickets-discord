@@ -84,6 +84,6 @@ Genarally the close button is already given in this ticket welcome and also you 
 ticket.close(message.channel) //the message channel parameter
 ```
 
-# Whats new in v3.x.x DEV 🎉
+# Whats new in v3.x.x PR 🎉
 1. Added logs channel support
 2. Combined `ticket.login` with `ticket.start`

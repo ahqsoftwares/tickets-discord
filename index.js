@@ -284,7 +284,7 @@ async function issue(message, channel, msg, rolename, logname){
               settings.set(`r${message.guild.id}`, ((message.guild.roles.cache.find(role => role.name == rolename)).id));
             }
       if (!(logname == null)) {
-        if (!(message.guild.channels.find(ch => ch.name == logname))) {
+        if (!(message.guild.channels.cache.find(ch => ch.name == logname))) {
           message.guild.channels.create(`${logname}`, {
             permissionOverwrites: [
               {
@@ -315,8 +315,8 @@ async function issue(message, channel, msg, rolename, logname){
             throw new Error(`Error creating channel CODE: ${e}`)
           })
         } else {
-          settings.set(`logs${message.guild.id}`, (message.guild.channels.find(channels => channels.name == String(logname))).id)
-          (message.guild.channels.find(channels => channels.name == String(logname))).send({
+          settings.set(`logs${message.guild.id}`, ((message.guild.channels.cache.find(ch => ch.name == logname)).id))
+          (message.guild.channels.cache.find(channels => channels.name == String(logname))).send({
             embeds: [new Discord.MessageEmbed()
               .setTitle("Ticket Logs Channel!")
               .setDescription(`Ticket logs will be posted in ${ch}`)
@@ -441,7 +441,7 @@ async function close(message){
 message.delete();
 if (log == true) {
   if (type == 'mongo') {
-  (channel.guild.channels.cache.find(ch => ch.name == (await(settings.get(`logs${message.guild.id}`))))).send({
+  (channel.guild.channels.cache.find(ch => ch.id == (await(settings.get(`logs${message.guild.id}`))))).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("Ticket Closed")
             .setDescription(`${message.name}`)
@@ -450,7 +450,7 @@ if (log == true) {
           ]
   })
   } else {
-    (channel.guild.channels.cache.find(ch => ch.name == ((settings.get(`logs${message.guild.id}`))))).send({
+    (channel.guild.channels.cache.find(ch => ch.id == ((settings.get(`logs${message.guild.id}`))))).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("Ticket Closed")
             .setDescription(`${message.name}`)
