@@ -25,7 +25,8 @@ client.on("interactionCreate", async (interaction) => {
   if (!(await(settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == (await(settings.get(`${interaction.message.guild.id}-ticket`)))) {
     if (log == true) {
-      ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))), (await(settings.get(`logs${interaction.guild.id}`))));  
+      ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))), (await(settings.get(`logs${interaction.guild.id}`))));
+      return  
     }
     ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))));
   }
@@ -66,8 +67,7 @@ async function ticket(interaction, rname, logname) {
   })
   .then(async channel => {
     if (log = true) {
-      logc = (channel.guild.channels.cache.find(ch => ch.name == logname));
-      logc.send({
+      (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("New Ticket")
             .setDescription(`${channel.name}`)
