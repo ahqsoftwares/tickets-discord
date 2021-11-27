@@ -305,7 +305,7 @@ async function issue(message, channel, msg, rolename, logname){
             cha.send({
               embeds: [new Discord.MessageEmbed()
                 .setTitle("Ticket Logs Channel!")
-                .setDescription(`Ticket logs will be posted in ${ch}`)
+                .setDescription(`Ticket logs will be posted in ${cha}`)
                 .setFooter(`Secure Ticketing for ${message.guild.id}`)
                 .setTimestamp()
               ]
@@ -319,7 +319,7 @@ async function issue(message, channel, msg, rolename, logname){
           (message.guild.channels.cache.find(channels => channels.name == String(logname))).send({
             embeds: [new Discord.MessageEmbed()
               .setTitle("Ticket Logs Channel!")
-              .setDescription(`Ticket logs will be posted in ${ch}`)
+              .setDescription(`Ticket logs will be posted in ${(message.guild.channels.cache.find(ch => ch.name == logname))}`)
               .setFooter(`Secure Ticketing for ${message.guild.id}`)
               .setTimestamp()
             ]
