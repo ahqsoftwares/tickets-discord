@@ -20,7 +20,8 @@ let {
     
     const ticket = require('tickets-discord');
     
-    ticket.start(client, "MONGODB url") //defined client, mongodb url
+    ticket.start(client, "MONGODB url", true/false) //defined client, mongodb url 
+    //the true parameter is logs parameter (logs = true/false)
 
     client.on('messageCreate', async (message) => {
     if (message.content.startsWith('n!ticket')) {
@@ -47,7 +48,8 @@ let {
 const ticket = require('tickets-discord');
 
 //Login with MongoDB/Local DB
-ticket.start(client, "URL") //client
+ticket.start(client, "URL", true/false) //client
+//the true/false parater triggers logs!
 ```
 You can use `local` instead of a mongodb url to make a local DB.
 
@@ -56,7 +58,8 @@ Example
 const ticket = require('tickets-discord');
 
 //Login with MongoDB/Local DB
-ticket.start(client, "local") //client
+ticket.start(client, "local", true/false) //client
+//the true/false parater triggers logs!
 
 //This will make a local quickdb database!
 ```
@@ -84,6 +87,6 @@ Genarally the close button is already given in this ticket welcome and also you 
 ticket.close(message.channel) //the message channel parameter
 ```
 
-# Whats new in v3.x.x 🎉
+# Whats new in v3 🎉
 1. Added logs channel support
 2. Combined `ticket.login` with `ticket.start`

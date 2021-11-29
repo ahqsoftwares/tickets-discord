@@ -33,7 +33,7 @@ client.on("interactionCreate", async (interaction) => {
 } else {
   if (!((settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == ((settings.get(`${interaction.message.guild.id}-ticket`)))) {
-    if (log = true) {
+    if (log == true) {
       ticket(interaction, settings.get(`r${interaction.guild.id}`), settings.get(`logs${interaction.guild.id}`));
       return
     }
@@ -66,7 +66,7 @@ async function ticket(interaction, rname, logname) {
     type: "text"
   })
   .then(async channel => {
-    if (log = true) {
+    if (log == true) {
       (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
           embeds: [new Discord.MessageEmbed()
             .setTitle("New Ticket")
@@ -373,7 +373,7 @@ async function edit(channel, rname, mid, logname) {
     }
   ]
   });
-  if (log = true) {
+  if (log == true) {
     (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
         embeds: [new Discord.MessageEmbed()
           .setTitle("Ticket UnArchive")
@@ -457,7 +457,7 @@ async function ar(message, rname, logname){
     }
   ]
 });
-if (log = true) {
+if (log == true) {
   (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
       embeds: [new Discord.MessageEmbed()
         .setTitle("Ticket Archive")
