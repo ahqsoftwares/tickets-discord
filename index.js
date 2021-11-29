@@ -206,8 +206,7 @@ async function setup(message,channelID){
                                     time: (1 * 60 * 1000),
                                     max: 1
                                 }).then(async (collected) => {
-                                  let channelname = collected.first().content;
-                                  issue(message, channel, mess, rolen, channelname)
+                                  issue(message, channel, mess, rolen, String(collected.first().content));
                                 }).catch(async (e) => {
                                   console.error(e);
                                   s4dmessage.channel.send({
@@ -286,7 +285,7 @@ async function issue(message, channel, msg, rolename, logname){
             }
       if (!(logname == null)) {
         if (!(message.guild.channels.cache.find(ch => ch.name == logname))) {
-          message.guild.channels.create(`${logname}`, {
+          message.guild.channels.create(String(logname), {
             permissionOverwrites: [
               {
                 id: message.guild.id,
@@ -301,21 +300,18 @@ async function issue(message, channel, msg, rolename, logname){
             ],
             type: "text"
           })
-          .then(cha => {
-            settings.set(`logs${message.guild.id}`, cha.id);
-            cha.send({
+          .then(ahq => {
+            settings.set(`logs${message.guild.id}`, ahq.id);
+            ahq.send({
               embeds: [new Discord.MessageEmbed()
                 .setTitle("Ticket Logs Channel!")
                 .setColor("YELLOW")
-                .setDescription(`Ticket logs will be posted in ${cha}`)
-                .setFooter(`Secure Ticketing for ${message.guild.id}`)
+                .setDescription(`Ticket logs will be posted in ${ahq}`)
+                .setFooter(`Secure Ticketing for ${ahq.guild.id}`)
                 .setTimestamp()
               ]
-            })
-          })
-          .catch(e => {
-            throw new Error(`Error creating channel CODE: ${e}`)
-          })
+            });
+          });
         } else {
           settings.set(`logs${message.guild.id}`, ((message.guild.channels.cache.find(ch => ch.name == logname)).id));
           (message.guild.channels.cache.find(channels => channels.name == String(logname))).send({
