@@ -5,7 +5,14 @@ var settings, type, mid, bot, r, log;
 async function start(client, url, logs){
   if (url == 'local') {
     type = "quick";
-    settings = require('quick.db');
+const Database = require("easy-json-database");
+settings = new Database("./tickets.json", {
+    snapshots: {
+        enabled: true,
+        interval: 24 * 60 * 60 * 1000,
+        folder: './backups/'
+    }
+});
   } else {
     type = 'mongo';
     settings = new DB(url);
