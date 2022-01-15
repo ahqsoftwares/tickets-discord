@@ -41,7 +41,7 @@ client.on("interactionCreate", async (interaction) => {
   if (!((settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == ((settings.get(`${interaction.message.guild.id}-ticket`)))) {
     if (log == true) {
-      ticket(interaction, settings.get(`r${interaction.guild.id}`), settings.get(`logs${interaction.guild.id}`));
+      ticket(interaction, settings.get(`r${interaction.guild.id}`));
       return
     }
     ticket(interaction, settings.get(`r${interaction.guild.id}`));
@@ -271,7 +271,7 @@ async function unarchive(channel){
       return
     }
     if (log == true) {
-      edit(channel, (await(settings.get(`r${channel.guild.id}`))), (await(settings.get(channel.id))), (await(settings.get(`logs${channel.guild.id}`))));
+      edit(channel, (await(settings.get(`r${channel.guild.id}`))), (await(settings.get(channel.id))));
       return
       }
     edit(channel, (await(settings.get(`r${channel.guild.id}`))), (await(settings.get(channel.id))));
@@ -283,7 +283,7 @@ async function unarchive(channel){
       return
     }
     if (log == true) {
-    edit(channel, (settings.get(`r${channel.guild.id}`)), (settings.get(channel.id)), settings.get(`logs${channel.guild.id}`));
+    edit(channel, (settings.get(`r${channel.guild.id}`)), (settings.get(channel.id)));
     return
     }
     edit(channel, (settings.get(`r${channel.guild.id}`)), (settings.get(channel.id)));
@@ -356,13 +356,13 @@ async function archive(message){
     }
     if (type == 'mongo') {
       if (log == true) {
-      ar(message, (await(settings.get(`r${message.guild.id}`))), (await(settings.get(`logs${message.guild.id}`))));
+      ar(message, (await(settings.get(`r${message.guild.id}`))));
       return
       }
       ar(message, (await(settings.get(`r${message.guild.id}`))));
     } else {
       if(log == true) {
-      ar(message, (settings.get(`r${message.guild.id}`)), settings.get(`logs${message.guild.id}`));
+      ar(message, (settings.get(`r${message.guild.id}`)));
       return
       }
       ar(message, (settings.get(`r${message.guild.id}`)));
