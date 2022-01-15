@@ -32,7 +32,7 @@ client.on("interactionCreate", async (interaction) => {
   if (!(await(settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == (await(settings.get(`${interaction.message.guild.id}-ticket`)))) {
     if (log == true) {
-      ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))), (await(settings.get(`logs${interaction.guild.id}`))));
+      ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))));
       return  
     }
     ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))));
@@ -49,7 +49,7 @@ client.on("interactionCreate", async (interaction) => {
 }
 });
 }
-async function ticket(interaction, rname, logname) {
+async function ticket(interaction, rname) {
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
   let reaction = interaction;
   reaction.guild.channels
@@ -74,16 +74,7 @@ async function ticket(interaction, rname, logname) {
   })
   .then(async channel => {
     if (log == true) {
-      (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
-          embeds: [new Discord.MessageEmbed()
-            .setTitle("New Ticket")
-            .setColor("GREEN")
-            .setDescription(`${channel.name}`)
-            .addField("Staff role", `<@&${rname}>`, false)
-            .setFooter(`Secure Ticketing for ${channel.guild.id}`)
-            .setTimestamp()
-          ]
-      })
+      this.emit("ticketCreate", reaction.member, reaction.guild)
     }
     settings.set(channel.id, interaction.member.user.id);
     channel.send({
@@ -207,20 +198,7 @@ async function setup(message,channelID){
                             rolen = reply;
                             message = collected.first();
                             if (log == true) {
-                              (s4dmessage.channel).send(String('Your Ticket Logs channel name!')).then(() => {
-                                (s4dmessage.channel).awaitMessages({
-                                    filter: (m) => m.author.id === (s4dmessage.member).id,
-                                    time: (1 * 60 * 1000),
-                                    max: 1
-                                }).then(async (collected) => {
-                                  issue(message, channel, mess, rolen, String(collected.first().content));
-                                }).catch(async (e) => {
-                                  console.error(e);
-                                  s4dmessage.channel.send({
-                                      content: String('Discarded!')
-                                  });
-                              });
-                              })
+                            issue(message, channel, mess, rolen);  
                             } else {
                             issue(message, channel, mess, rolen);
                             }
@@ -276,62 +254,12 @@ async function issue(message, channel, msg, rolename, logname){
             role.setPermissions([Discord.Permissions.FLAGS.VIEW_CHANNEL, Discord.Permissions.FLAGS.SEND_MESSAGES]);
             role.setMentionable(false);
             settings.set(`r${message.guild.id}`, role.id);
-            if (logname == null) {
-              message.channel.send(`Role \`${rolename}\` was created and ticket system success!`);
-            } else {
-              message.channel.send(`Role \`${rolename}\` was created and procceeding to logs channel`);
-            }
+            message.channel.send(`Role \`${rolename}\` was created and ticket system success!`);
         });
             } else {
-              if (logname == null) {
-                message.channel.send(`Role \`${rolename}\` was found and ticket system success!`);
-              } else {
-                message.channel.send(`Role \`${rolename}\` was found and procceeding to logs channel`);
-              }
+              message.channel.send(`Role \`${rolename}\` was found and ticket system success!`);
               settings.set(`r${message.guild.id}`, ((message.guild.roles.cache.find(role => role.name == rolename)).id));
             }
-      if (!(logname == null)) {
-        if (!(message.guild.channels.cache.find(ch => ch.name == logname))) {
-          message.guild.channels.create(String(logname), {
-            permissionOverwrites: [
-              {
-                id: message.guild.id,
-                deny: ["VIEW_CHANNEL"]
-              },
-              {
-                id: message.guild.roles.cache.find(
-                  role => role.name === rolename
-                ),
-                allow: ["SEND_MESSAGES", "VIEW_CHANNEL"]
-              }
-            ],
-            type: "text"
-          })
-          .then(ahq => {
-            settings.set(`logs${message.guild.id}`, ahq.id);
-            ahq.send({
-              embeds: [new Discord.MessageEmbed()
-                .setTitle("Ticket Logs Channel!")
-                .setColor("YELLOW")
-                .setDescription(`Ticket logs will be posted in ${ahq}`)
-                .setFooter(`Secure Ticketing for ${ahq.guild.id}`)
-                .setTimestamp()
-              ]
-            });
-          });
-        } else {
-          settings.set(`logs${message.guild.id}`, ((message.guild.channels.cache.find(ch => ch.name == logname)).id));
-          (message.guild.channels.cache.find(channels => channels.name == String(logname))).send({
-            embeds: [new Discord.MessageEmbed()
-              .setTitle("Ticket Logs Channel!")
-              .setColor("YELLOW")
-              .setDescription(`Ticket logs will be posted in ${(message.guild.channels.cache.find(ch => ch.name == logname))}`)
-              .setFooter(`Secure Ticketing for ${message.guild.id}`)
-              .setTimestamp()
-            ]
-          })
-        }
-      }
 }
 async function unarchive(channel){
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
@@ -381,15 +309,7 @@ async function edit(channel, rname, mid, logname) {
   ]
   });
   if (log == true) {
-    (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
-        embeds: [new Discord.MessageEmbed()
-          .setTitle("Ticket UnArchive")
-          .setColor("GREEN")
-          .setDescription(`${channel.name}`)
-          .setFooter(`Secure Ticketing for ${channel.guild.id}`)
-          .setTimestamp()
-        ]
-    })
+    this.emit("ticketUnarchive", channel.guild.members.cache.find(m => m.user.id == mid), channel, channel.guild)
   }
   channel.send({
     content: `Hello <@${mid}>\nThe ticket was reopened by a staff member!`,
@@ -448,7 +368,7 @@ async function archive(message){
       ar(message, (settings.get(`r${message.guild.id}`)));
     }
 }
-async function ar(message, rname, logname){
+async function ar(message, rname){
   let channel = message;
   message.edit({
     permissionOverwrites: [
@@ -465,15 +385,7 @@ async function ar(message, rname, logname){
   ]
 });
 if (log == true) {
-  (channel.guild.channels.cache.find(ch => ch.id == logname)).send({
-      embeds: [new Discord.MessageEmbed()
-        .setTitle("Ticket Archive")
-        .setColor("YELLOW")
-        .setDescription(`${channel.name}`)
-        .setFooter(`Secure Ticketing for ${channel.guild.id}`)
-        .setTimestamp()
-      ]
-  })
+  this.emit("ticketArchive", channel, channel.id)
 }
 }
 async function close(message){
@@ -485,28 +397,11 @@ async function close(message){
   settings.delete(message.id);
 message.delete();
 if (log == true) {
-  if (type == 'mongo') {
-  (channel.guild.channels.cache.find(ch => ch.id == (await(settings.get(`logs${message.guild.id}`))))).send({
-          embeds: [new Discord.MessageEmbed()
-            .setTitle("Ticket Closed")
-            .setColor("RED")
-            .setDescription(`${message.name}`)
-            .setFooter(`Secure Ticketing for ${message.guild.id}`)
-            .setTimestamp()
-          ]
-  })
-  } else {
-    (channel.guild.channels.cache.find(ch => ch.id == ((settings.get(`logs${message.guild.id}`))))).send({
-          embeds: [new Discord.MessageEmbed()
-            .setTitle("Ticket Closed")
-            .setColor("RED")
-            .setDescription(`${message.name}`)
-            .setFooter(`Secure Ticketing for ${message.guild.id}`)
-            .setTimestamp()
-          ]
-  })
-  }
+  this.emit("ticketClose", message.name, message.guild)
 }
+}
+async function version() {
+  return "^4-dev";
 }
 module.exports = {
   setup: setup,
@@ -518,5 +413,6 @@ module.exports = {
   start,
   close,
   archive,
-  unarchive
+  unarchive,
+  version
 }
