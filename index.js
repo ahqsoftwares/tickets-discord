@@ -508,8 +508,15 @@ if (log == true) {
   }
 }
 }
-module.exports.setup = setup
-module.exports.start = start
-module.exports.close = close
-module.exports.archive = archive
-module.exports.unarchive = unarchive
+module.exports = {
+  setup: setup,
+  start: start,
+  close: close,
+  archive: archive,
+  unarchive: unarchive,
+  setup,
+  start,
+  close,
+  archive,
+  unarchive
+}
