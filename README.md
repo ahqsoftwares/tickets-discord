@@ -1,6 +1,5 @@
 # Example 🔍
-```
-//js
+```js
 let {
         Discord,
         Client,
@@ -44,7 +43,7 @@ let {
 
 ## Example in detail ✔
 ### Declaration 📢
-```
+```js
 const ticket = require('tickets-discord');
 
 //Login with MongoDB/Local DB
@@ -54,7 +53,7 @@ ticket.start(client, "URL", true/false) //client
 You can use `local` instead of a mongodb url to make a local DB.
 
 Example 
-```
+```js
 const ticket = require('tickets-discord');
 
 //Login with MongoDB/Local DB
@@ -65,25 +64,25 @@ ticket.start(client, "local", true/false) //client
 ```
 ### Make ticket 🎫
 
-```
+```js
 ticket.setup(message/interaction, channelID)//message, ticket setup channel id
 ```
 ### Archiving a ticket 🎫
 The button archives the ticket also you can use 
 
-```
+```js
 ticket.archive(messsage.channel) //message channel parameter
 ```
 
 ### Unarchiving a ticket 🎫
 
-```
+```js
 ticket.archive(messsage.channel) //message channel parameter
 ```
 ### Closing a ticket 🎫
 Genarally the close button is already given in this ticket welcome and also you can delete a ticket by using.
 
-```
+```js
 ticket.close(message.channel) //the message channel parameter
 ```
 
