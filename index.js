@@ -74,7 +74,7 @@ async function ticket(interaction, rname) {
   })
   .then(async channel => {
     if (log == true) {
-      this.emit("ticketCreate", reaction.member, reaction.guild)
+      emit("ticketCreate", reaction, `Ticket for ${channel.name.replace("ticket-", "")} was **created**`, "GREEN")
     }
     settings.set(channel.id, interaction.member.user.id);
     channel.send({
@@ -309,7 +309,7 @@ async function edit(channel, rname, mid, logname) {
   ]
   });
   if (log == true) {
-    this.emit("ticketUnarchive", channel.guild.members.cache.find(m => m.user.id == mid), channel, channel.guild)
+    emit("ticketUnarchive", channel, `Ticket for ${channel.guild.members.cache.find(m => m.user.id == mid).user.username} was **unarchived**`, "YELLOW")
   }
   channel.send({
     content: `Hello <@${mid}>\nThe ticket was reopened by a staff member!`,
@@ -385,7 +385,7 @@ async function ar(message, rname){
   ]
 });
 if (log == true) {
-  this.emit("ticketArchive", channel, channel.id)
+  emit("ticketArchive", channel, `Ticket for ${channel.name.replace("ticket-", "")} was **archived**!`, "YELLOW")
 }
 }
 async function close(message){
@@ -397,11 +397,33 @@ async function close(message){
   settings.delete(message.id);
 message.delete();
 if (log == true) {
-  this.emit("ticketClose", message.name, message.guild)
+  emit("ticketClose", message, `Ticket for ${message.name.replace("ticket-", "")} was **closed**!`, "RED")
 }
 }
 async function version() {
-  return "^4-dev";
+  return "version 4";
+}
+async function emit(a, b, c, d){
+  const reaction = b;
+  if (!(b.guild.channels.cache.find(c => c.name == "ticket-logs"))) {
+    b.guild.channels.create("ticket-logs", {
+      permissionOverwrites: [
+        {
+          id: reaction.guild.id,
+          deny: ["VIEW_CHANNEL"]
+        }
+      ],
+      type: "text"
+    });
+  }
+  b.guild.channels.cache.find(c => c.name == "ticket-logs").send({
+    embeds: [new Discord.MessageEmbed()
+    .setTitle(String(a))
+    .setDescription(String(c))
+    .setColor(d)
+    ]
+  });
+
 }
 module.exports = {
   setup: setup,
@@ -414,5 +436,6 @@ module.exports = {
   close,
   archive,
   unarchive,
-  version
+  version,
+  emit
 }
