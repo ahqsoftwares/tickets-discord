@@ -25,6 +25,8 @@ let {
     client.on('messageCreate', async (message) => {
     if (message.content.startsWith('n!ticket')) {
         ticket.setup(message, message.mentions.channels.first().id);
+        //you can use parent id here also (optional)
+        ticket.setup(message, message.mentions.channels.first().id, "Parent ID");
     }
     if (message.content.startsWith('n!close')) {
         ticket.close(message.channel);

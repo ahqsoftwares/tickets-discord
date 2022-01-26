@@ -32,24 +32,24 @@ client.on("interactionCreate", async (interaction) => {
   if (!(await(settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == (await(settings.get(`${interaction.message.guild.id}-ticket`)))) {
     if (log == true) {
-      ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))));
+      ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))), (await(settings.get(`${interaction.guild.id}-parent`) || null)));
       return  
     }
-    ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))));
+    ticket(interaction, (await(settings.get(`r${interaction.guild.id}`))), (await(settings.get(`${interaction.guild.id}-parent`) || null)));
   }
 } else {
   if (!((settings.has(`${interaction.guild.id}-ticket`)))) return;
   if (reaction.channel.id == ((settings.get(`${interaction.message.guild.id}-ticket`)))) {
     if (log == true) {
-      ticket(interaction, settings.get(`r${interaction.guild.id}`));
+      ticket(interaction, settings.get(`r${interaction.guild.id}`), (settings.get(`${interaction.guild.id}-parent`) || null));
       return
     }
-    ticket(interaction, settings.get(`r${interaction.guild.id}`));
+    ticket(interaction, settings.get(`r${interaction.guild.id}`), (settings.get(`${interaction.guild.id}-parent`) || null));
   }
 }
 });
 }
-async function ticket(interaction, rname) {
+async function ticket(interaction, rname, parent) {
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
   let reaction = interaction;
   reaction.guild.channels
@@ -75,6 +75,9 @@ async function ticket(interaction, rname) {
   .then(async channel => {
     if (log == true) {
       emit("ticketCreate", reaction, `Ticket for ${channel.name.replace("ticket-", "")} was **created**`, "GREEN")
+    }
+    if (parent) {
+      channel.setParent(parent)
     }
     settings.set(channel.id, interaction.member.user.id);
     channel.send({
@@ -125,7 +128,7 @@ async function ticket(interaction, rname) {
     });
   });
 }
-async function setup(message,channelID){
+async function setup(message,channelID, parentid){
   if(!bot) throw new Error("Client not provided, Ticket system will not be working.")
     const channel = message.guild.channels.cache.find(channel => channel.id === channelID);
     let s4dmessage = message;
@@ -169,9 +172,9 @@ async function setup(message,channelID){
                 ephemeral: true
             });
             if (log == true) {
-            issue(message, channel, 'Click to open a ticket!', "Ticket", 'logs-ticket');
+            issue(message, channel, 'Click to open a ticket!', "Ticket", parentid);
             } else {
-              issue(message, channel, 'Click to open a ticket!', "Ticket");
+              issue(message, channel, 'Click to open a ticket!', "Ticket", parentid);
             }
         }
         if (i.customId == 'sec') {
@@ -198,9 +201,9 @@ async function setup(message,channelID){
                             rolen = reply;
                             message = collected.first();
                             if (log == true) {
-                            issue(message, channel, mess, rolen);  
+                            issue(message, channel, mess, rolen, parentid);  
                             } else {
-                            issue(message, channel, mess, rolen);
+                            issue(message, channel, mess, rolen, parentid);
                             }
                             reply = null;
                         }).catch(async (e) => {
@@ -224,7 +227,7 @@ async function setup(message,channelID){
     });
       });
     }
-async function issue(message, channel, msg, rolename, logname){
+async function issue(message, channel, msg, rolename, parent){
     channel.send({
         embeds: [
           new Discord.MessageEmbed()
@@ -242,8 +245,11 @@ async function issue(message, channel, msg, rolename, logname){
                 .setEmoji('🎫')
               )
             ]
-      }).then(sent => {
+      }).then(() => {
         settings.set(`${message.guild.id}-ticket`, channel.id);
+        if (parent) {
+          settings.set(`${message.guild.id}-parent`, String(parent));
+        }
       });
       if (!(message.guild.roles.cache.find(role => role.name == rolename))) {
 
