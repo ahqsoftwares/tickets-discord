@@ -1,3 +1,10 @@
+<div align="center">
+  <br />
+  <p>
+    <a href="https://www.npmjs.com/package/tickets-discord"><img src="https://img.shields.io/npm/v/tickets-discord.svg?maxAge=3600" alt="npm version" /></a>
+  </p>
+</div>
+
 # Example 🔍
 ```js
 let {
